@@ -55,7 +55,7 @@
 
   <servlet>
     <servlet-name>adminOrders</servlet-name>
-    <servlet-class>com.bsuir.aleksandrov.phoneshop.web.AdminOrderManagePageServlet</servlet-class>
+    <servlet-class>com.bsuir.aleksandrov.phoneshop.web.AdminOrdersPageServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -70,7 +70,7 @@
 
   <servlet-mapping>
     <servlet-name>adminOrderManage</servlet-name>
-    <url-pattern>/admin/order/*</url-pattern>
+    <url-pattern>/admin/orders/*</url-pattern>
   </servlet-mapping>
 
   <error-page>

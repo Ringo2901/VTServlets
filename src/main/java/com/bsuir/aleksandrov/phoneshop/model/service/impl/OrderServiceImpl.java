@@ -14,6 +14,9 @@ import com.bsuir.aleksandrov.phoneshop.model.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Time;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,6 +25,18 @@ public class OrderServiceImpl implements OrderService {
     private CartService cartService = HttpSessionCartService.getInstance();
     private StockDao stockDao = JdbcStockDao.getInstance();
     private OrderDao orderDao = JdbcOrderDao.getInstance();
+    private static volatile OrderService instance;
+    public static OrderService getInstance() {
+        if (instance == null) {
+            synchronized (OrderService.class) {
+                if (instance == null) {
+                    instance = new OrderServiceImpl();
+                }
+            }
+        }
+        return instance;
+    }
+
     public Order createOrder(Cart cart) {
         Order order = new Order();
         BigDecimal deliveryPrice = BigDecimal.valueOf(10);
@@ -35,12 +50,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void placeOrder(final Order order, HttpServletRequest request) throws OutOfStockException {
         checkStock(request, order);
+        order.setDate(new Date(Instant.now().toEpochMilli()));
+        order.setTime(new Time(Instant.now().toEpochMilli()));
         order.setStatus(OrderStatus.NEW);
         order.getOrderItems().stream()
                 .forEach(item -> stockDao.reserve(item.getPhone().getId(), item.getQuantity()));
         order.setSecureID(UUID.randomUUID().toString());
         orderDao.save(order);
         cartService.clear(request);
+    }
+    @Override
+    public void changeOrderStatus(Long id, OrderStatus status) {
+        orderDao.changeStatus(id, status);
     }
 
     private void fillOrderItems(Order order, Cart cart) {

@@ -1,6 +1,8 @@
 package com.bsuir.aleksandrov.phoneshop.model.entities.order;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 public class Order
@@ -25,6 +27,24 @@ public class Order
     private String additionalInformation;
 
     private OrderStatus status;
+    private Date date;
+    private Time time;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
 
     public Long getId() {
         return id;

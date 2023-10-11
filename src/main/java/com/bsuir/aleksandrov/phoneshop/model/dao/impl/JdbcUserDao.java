@@ -17,7 +17,7 @@ public class JdbcUserDao implements UserDao {
     private static String FIND_USER = "SELECT * FROM users WHERE login = ? AND password = ?";
     private static String FIND_ALL_USERS = "SELECT * FROM users";
     private static String DELETE_USER  = "DELETE * FROM users WHERE login = ? AND password = ?";
-    private static String ADD_USER  = "INSERT INTO users (login, password) VALUES (?, ?)";
+    private static String ADD_USER  = "INSERT INTO users (login, password, role) VALUES (?, ?, ?)";
     ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public static UserDao getInstance(){

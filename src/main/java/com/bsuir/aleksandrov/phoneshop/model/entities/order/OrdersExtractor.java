@@ -26,6 +26,8 @@ public class OrdersExtractor {
             order.setAdditionalInformation(resultSet.getString("additionalInformation"));
             order.setStatus(OrderStatus.fromString(resultSet.getString("status")));
             order.setOrderItems(orderItemDao.getOrderItems(order.getId()));
+            order.setDate(resultSet.getDate("date"));
+            order.setTime(resultSet.getTime("time"));
             orders.add(order);
         }
         return orders;
