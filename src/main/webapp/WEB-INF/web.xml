@@ -73,6 +73,16 @@
     <url-pattern>/admin/orders/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>adminUsers</servlet-name>
+    <servlet-class>com.bsuir.aleksandrov.phoneshop.web.AdminUsersPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>adminUsers</servlet-name>
+    <url-pattern>/admin/users</url-pattern>
+  </servlet-mapping>
+
   <error-page>
     <error-code>500</error-code>
     <location>/WEB-INF/pages/errorPage.jsp</location>

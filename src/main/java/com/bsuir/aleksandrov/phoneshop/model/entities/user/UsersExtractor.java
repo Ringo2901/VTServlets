@@ -17,9 +17,10 @@ public class UsersExtractor {
         List<User> users = new ArrayList<>();
         while (resultSet.next()) {
             User user = new User();
-            user.setUserRole(UserRole.user);
+            user.setId(resultSet.getLong("id"));
             user.setLogin(resultSet.getString("login"));
             user.setPassword(resultSet.getString("password"));
+            user.setUserRole(UserRole.valueOf(resultSet.getString("role")));
             users.add(user);
         }
         return users;

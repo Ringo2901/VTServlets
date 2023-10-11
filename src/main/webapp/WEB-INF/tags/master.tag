@@ -35,7 +35,10 @@
                 </div>
             </div>
             <form action="<c:url value="/admin/orders"/>">
-                <button class="btn btn-light"> Admin </button>
+                <button class="btn btn-light"> Orders Page </button>
+            </form>
+            <form action="<c:url value="/admin/users"/>">
+                <button class="btn btn-light"> Users Page </button>
             </form>
         </div>
     </div>
