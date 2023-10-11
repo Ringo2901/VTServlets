@@ -6,7 +6,7 @@
 <html>
 <head>
     <title>${pageTitle}</title>
-     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
@@ -23,7 +23,15 @@
                     <a style="font-family: 'Lobster'" class="text-light" href="<c:url value="/"/>">
                         Phonify
                     </a>
+                    <br>
+                    <a style="font-family: 'Ubuntu'" class="text-light">
+                        <c:if test="${not empty sessionScope.login}">
+                            Username: ${sessionScope.login}
+                        </c:if>
+                    </a>
+
                 </h1>
+
             </div>
             <div class="col-6">
                 <div class="float-right">
@@ -32,17 +40,24 @@
                             <span id="cartTotalCost"><c:out value="${cart.totalCost}"/></span>$
                         </button>
                     </form>
+                    <c:if test="${role.equals('Admin')}">
+                    <form action="<c:url value="/admin/orders"/>">
+                        <button class="btn btn-light"> Orders Page </button>
+                    </form>
+                    <form action="<c:url value="/admin/users"/>">
+                        <button class="btn btn-light"> Users Page </button>
+                    </form>
+                    </c:if>
                 </div>
             </div>
-            <form action="<c:url value="/admin/orders"/>">
-                <button class="btn btn-light"> Orders Page </button>
-            </form>
-            <form action="<c:url value="/admin/users"/>">
-                <button class="btn btn-light"> Users Page </button>
-            </form>
+            <div class="col-6">
+                <a href="<c:url value="/user/registration"/>" class="btn btn-primary">Registration</a>
+                <a href="<c:url value="/user/authorisation"/>" class="btn btn-success">Login</a>
+                <a href="<c:url value="/user/logout"/>" class="btn btn-success">Logout</a>
+            </div>
+
         </div>
     </div>
-
 </header>
 <main>
     <p></p>
@@ -50,4 +65,3 @@
 </main>
 </body>
 </html>
-

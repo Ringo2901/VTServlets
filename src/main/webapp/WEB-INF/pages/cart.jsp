@@ -20,7 +20,7 @@
             <c:if test="${not empty param.message}">
                 <div class="container">
                     <div class="panel panel-success">
-                        <div class="panel-heading">Success</div>
+                        <div class="panel-heading">Error</div>
                         <div class="panel-body">${param.message}</div>
                     </div>
                 </div>

@@ -3,18 +3,18 @@ package com.bsuir.aleksandrov.phoneshop.model.entities.user;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
 
 public enum UserRole {
-    admin,
-    user,
-    visitor;
+    Admin,
+    User,
+    Visitor;
 
     @Override
     public String toString() {
         switch (this) {
-            case admin:
+            case Admin:
                 return "Admin";
-            case user:
+            case User:
                 return "User";
-            case visitor:
+            case Visitor:
                 return "Visitor";
             default:
                 return "UNKNOWN";

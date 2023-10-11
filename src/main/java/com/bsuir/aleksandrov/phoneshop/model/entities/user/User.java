@@ -6,6 +6,15 @@ public class User {
     private String login;
     private String password;
 
+    public User(UserRole userRole, String login, String password) {
+        this.userRole = userRole;
+        this.login = login;
+        this.password = password;
+    }
+
+    public User() {
+    }
+
     public Long getId() {
         return id;
     }

@@ -83,6 +83,16 @@
     <url-pattern>/admin/users</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>registration</servlet-name>
+    <servlet-class>com.bsuir.aleksandrov.phoneshop.web.RegistrationAndAuthorisationPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>registration</servlet-name>
+    <url-pattern>/user/*</url-pattern>
+  </servlet-mapping>
+
   <error-page>
     <error-code>500</error-code>
     <location>/WEB-INF/pages/errorPage.jsp</location>
