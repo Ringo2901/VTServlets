@@ -151,7 +151,14 @@
                         </tr>
                     </table>
                     <p>${order.additionalInformation}</p>
-                    <form>
+                    <c:choose>
+                        <c:when test="${sessionScope.role eq 'Admin'}">
+                            <form>
+                        </c:when>
+                        <c:otherwise>
+                            <form action="/user/authorisation" method="get">
+                        </c:otherwise>
+                    </c:choose>
                         <button class="btn btn-lg btn-secondary" formmethod="get" formaction="<c:url value="/admin/orders"/>">
                             Back
                         </button>

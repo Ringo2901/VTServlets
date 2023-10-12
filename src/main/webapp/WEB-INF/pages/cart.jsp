@@ -33,10 +33,24 @@
         <div class="col-2"></div>
         <div class="col-8">
             <c:if test="${cart.items.size() > 0}">
-                <form action="<c:url value="/order"/>" method="get">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.login}">
+                            <form action="<c:url value="/order"/>" method="get">
+                        </c:when>
+                        <c:otherwise>
+                            <form action="/user/authorisation" method="get">
+                        </c:otherwise>
+                    </c:choose>
                     <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit">Order</button>
                 </form>
-                <form action="/cart" method="post" id="updateForm">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.login}">
+                            <form action="/cart" method="post" id="updateForm">
+                        </c:when>
+                        <c:otherwise>
+                            <form action="/user/authorisation" method="get">
+                        </c:otherwise>
+                    </c:choose>
                     <input type="hidden" name="updateOperation" value="true">
                     <table class="table table-hover table-bordered text-center">
                         <thead>

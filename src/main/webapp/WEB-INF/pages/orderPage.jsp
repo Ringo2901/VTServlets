@@ -104,8 +104,14 @@
                 </tr>
             </table>
 
-
-            <form method="post" action="${pageContext.servletContext.contextPath}/order">
+            <c:choose>
+                <c:when test="${not empty sessionScope.login}">
+                    <form method="post" action="${pageContext.servletContext.contextPath}/order">
+                </c:when>
+                <c:otherwise>
+                    <form action="/user/authorisation" method="get">
+                </c:otherwise>
+            </c:choose>
                 <table class="table-borderless">
                     <tr>
                         <td class="align-top">

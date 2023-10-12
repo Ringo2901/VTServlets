@@ -52,7 +52,14 @@
                 <td class="align-middle">${user.userRole}</td>
                 <td class="align-middle">${user.login}</td>
                 <td class="align-middle">
-                  <form action="/admin/users" method="post">
+                    <c:choose>
+                      <c:when test="${sessionScope.role eq 'Admin'}">
+                        <form action="/admin/users" method="post">
+                      </c:when>
+                      <c:otherwise>
+                        <form action="/user/authorisation" method="get">
+                      </c:otherwise>
+                    </c:choose>
                     <input type="hidden" name="userId" value="${user.id}">
                     <button type="submit" class="btn btn-danger">Delete</button>
                   </form>

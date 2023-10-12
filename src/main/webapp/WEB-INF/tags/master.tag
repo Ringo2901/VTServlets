@@ -35,11 +35,20 @@
             </div>
             <div class="col-6">
                 <div class="float-right">
-                    <form action="<c:url value="/cart"/>">
-                        <button class="btn btn-light"> My Cart:
-                            <span id="cartTotalCost"><c:out value="${cart.totalCost}"/></span>$
-                        </button>
-                    </form>
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.login}">
+                            <form action="<c:url value="/cart"/>">
+                                <button class="btn btn-light"> My Cart:
+                                    <span id="cartTotalCost"><c:out value="${cart.totalCost}"/></span>$
+                                </button>
+                            </form>
+                        </c:when>
+                        <c:otherwise>
+                            <form action="<c:url value="/user/authorisation"/>">
+                                <button class="btn btn-light"> My Cart:</button>
+                            </form>
+                        </c:otherwise>
+                    </c:choose>
                     <c:if test="${role.equals('Admin')}">
                     <form action="<c:url value="/admin/orders"/>">
                         <button class="btn btn-light"> Orders Page </button>
@@ -48,12 +57,23 @@
                         <button class="btn btn-light"> Users Page </button>
                     </form>
                     </c:if>
+                    <c:if test="${role.equals('User')}">
+                        <form action="<c:url value="/user/orders"/>">
+                            <button class="btn btn-light"> Orders Page </button>
+                        </form>
+                    </c:if>
                 </div>
             </div>
             <div class="col-6">
                 <a href="<c:url value="/user/registration"/>" class="btn btn-primary">Registration</a>
-                <a href="<c:url value="/user/authorisation"/>" class="btn btn-success">Login</a>
-                <a href="<c:url value="/user/logout"/>" class="btn btn-success">Logout</a>
+                <c:choose>
+                <c:when test="${not empty sessionScope.login}">
+                    <a href="<c:url value="/user/logout"/>" class="btn btn-danger">Logout</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="<c:url value="/user/authorisation"/>" class="btn btn-success">Login</a>
+                </c:otherwise>
+                </c:choose>
             </div>
 
         </div>

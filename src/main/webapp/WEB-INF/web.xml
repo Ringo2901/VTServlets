@@ -3,7 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>Phonify</display-name>
+
+  <listener>
+    <listener-class>com.bsuir.aleksandrov.phoneshop.web.listener.CloseListener</listener-class>
+  </listener>
 
   <servlet>
     <servlet-name>productList</servlet-name>
@@ -15,9 +19,11 @@
     <url-pattern>/products</url-pattern>
   </servlet-mapping>
   <servlet>
+
     <servlet-name>cart</servlet-name>
     <servlet-class>com.bsuir.aleksandrov.phoneshop.web.CartPageServlet</servlet-class>
   </servlet>
+
   <servlet-mapping>
     <servlet-name>cart</servlet-name>
     <url-pattern>/cart</url-pattern>
@@ -91,6 +97,16 @@
   <servlet-mapping>
     <servlet-name>registration</servlet-name>
     <url-pattern>/user/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>userOrders</servlet-name>
+    <servlet-class>com.bsuir.aleksandrov.phoneshop.web.UserOrdersPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>userOrders</servlet-name>
+    <url-pattern>/user/orders</url-pattern>
   </servlet-mapping>
 
   <error-page>

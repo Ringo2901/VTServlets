@@ -33,7 +33,14 @@
                 <p class="text-justify">${phone.description}</p>
                 <div class="float-right">
                     <p class="text">Price: $${phone.price}</p>
-                    <form action="/cart" method="post">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.login}">
+                            <form action="/cart" method="post">
+                        </c:when>
+                        <c:otherwise>
+                            <form action="/user/authorisation" method="get">
+                        </c:otherwise>
+                    </c:choose>
                         <input type="hidden" name="addOperation" value="add">
                         <input type="hidden" name="id" value="${phone.id}">
                         <input type="number" name="quantity" id="quantity${phone.id}" min="1" required>

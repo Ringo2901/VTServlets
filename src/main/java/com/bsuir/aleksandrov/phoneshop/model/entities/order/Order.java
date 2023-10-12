@@ -10,14 +10,8 @@ public class Order
     private Long id;
     private String secureID;
     private List<OrderItem> orderItems;
-    /**
-     *  A sum of order item prices;
-     */
     private BigDecimal subtotal;
     private BigDecimal deliveryPrice;
-    /**
-     * <code>subtotal</code> + <code>deliveryPrice</code>
-     */
     private BigDecimal totalPrice;
 
     private String firstName;
@@ -29,6 +23,15 @@ public class Order
     private OrderStatus status;
     private Date date;
     private Time time;
+    private String login;
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
     public Date getDate() {
         return date;

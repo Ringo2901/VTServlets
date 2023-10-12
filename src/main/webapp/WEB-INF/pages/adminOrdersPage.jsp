@@ -41,6 +41,7 @@
                         <thead>
                         <tr class="bg-light">
                             <td>Order ID</td>
+                            <td>User Login</td>
                             <td>Customer</td>
                             <td>Phone</td>
                             <td>Address</td>
@@ -52,8 +53,16 @@
                         <c:forEach var="order" items="${orders}">
                             <tr>
                                 <td class="align-middle">
-                                    <a href="<c:url value="/admin/orders/${order.id}"/>">${order.id}</a>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.role eq 'Admin'}">
+                                            <a href="<c:url value="/admin/orders/${order.id}"/>">${order.id}</a>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="/user/authorisation" method="get">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </td>
+                                <td class="align-middle">${order.login}</td>
                                 <td class="align-middle">${order.firstName} ${order.lastName}</td>
                                 <td class="align-middle">${order.contactPhoneNo}</td>
                                 <td class="align-middle">${order.deliveryAddress}</td>
@@ -66,7 +75,6 @@
                 </c:when>
             </c:choose>
         </div>
-
         <div class="col-2"></div>
     </div>
 </tags:master>

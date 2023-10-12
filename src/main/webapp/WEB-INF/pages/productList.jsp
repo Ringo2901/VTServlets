@@ -88,7 +88,14 @@
             <td class="align-middle">${phone.displaySizeInches}"</td>
             <td class="align-middle">$ ${phone.price}</td>
             <td class="align-middle">
-              <form action="/cart" method="post">
+                      <c:choose>
+                        <c:when test="${not empty sessionScope.login}">
+                            <form action="/cart" method="post">
+                        </c:when>
+                        <c:otherwise>
+                            <form action="/user/authorisation" method="get">
+                        </c:otherwise>
+                      </c:choose>
                 <input type="hidden" name="addOperation" value="add">
                 <input type="hidden" name="id" value="${phone.id}">
                 <input type="number" name="quantity" id="quantity${phone.id}" min="1" required>

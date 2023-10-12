@@ -13,5 +13,6 @@ public interface OrderDao {
 
     void save(Order order);
     List<Order> findOrders();
+    List<Order> findOrdersByLogin(String login);
     void changeStatus(Long id, OrderStatus status);
 }

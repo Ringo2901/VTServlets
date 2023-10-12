@@ -52,6 +52,7 @@ public class OrderServiceImpl implements OrderService {
         checkStock(request, order);
         order.setDate(new Date(Instant.now().toEpochMilli()));
         order.setTime(new Time(Instant.now().toEpochMilli()));
+        order.setLogin(request.getSession().getAttribute("login").toString());
         order.setStatus(OrderStatus.NEW);
         order.getOrderItems().stream()
                 .forEach(item -> stockDao.reserve(item.getPhone().getId(), item.getQuantity()));
