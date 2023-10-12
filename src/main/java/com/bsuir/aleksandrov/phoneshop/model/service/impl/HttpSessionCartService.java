@@ -19,7 +19,6 @@ public class HttpSessionCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = HttpSessionCartService.class.getName() + ".cart";
     private static final String CART_ATTRIBUTE = "cart";
     private static volatile HttpSessionCartService instance;
-    private static final String ERROR_MESSAGE = "No such product with given code";
     private PhoneDao phoneDao;
     private StockDao stockDao;
 
