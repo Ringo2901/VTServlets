@@ -1,11 +1,15 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <jsp:useBean id="orders" scope="request" type="java.util.List"/>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="messages"/>
 <tags:master pageTitle="My Orders">
   <p></p>
   <div class="container">
-    <h2>My Orders</h2>
+    <h2> <fmt:message key="my_orders_title" /></h2>
   </div>
   <div class="panel"></div>
   <div class="row">
@@ -14,7 +18,7 @@
       <c:choose>
         <c:when test="${orders.size() <= 0}">
           <h1 class="text-center">
-            There is no orders right now
+            <fmt:message key="error_no_orders" />
           </h1>
         </c:when>
 
@@ -22,13 +26,13 @@
           <table class="table table-hover table-bordered">
             <thead>
             <tr class="bg-light">
-              <td>Order ID</td>
-              <td>Customer</td>
-              <td>Phone</td>
-              <td>Address</td>
-              <td>Date</td>
-              <td>Total price</td>
-              <td>Status</td>
+              <td> <fmt:message key="order_id" /></td>
+              <td> <fmt:message key="order_customer" /></td>
+              <td> <fmt:message key="order_phone" /></td>
+              <td> <fmt:message key="order_address" /></td>
+              <td> <fmt:message key="order_date" /></td>
+              <td> <fmt:message key="order_total_price" /></td>
+              <td> <fmt:message key="order_status" /></td>
             </tr>
             </thead>
             <c:forEach var="order" items="${orders}">

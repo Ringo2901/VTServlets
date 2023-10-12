@@ -2,8 +2,6 @@ package com.bsuir.aleksandrov.phoneshop.web;
 
 import com.bsuir.aleksandrov.phoneshop.model.dao.OrderDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcOrderDao;
-import com.bsuir.aleksandrov.phoneshop.model.service.OrderService;
-import com.bsuir.aleksandrov.phoneshop.model.service.impl.OrderServiceImpl;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;

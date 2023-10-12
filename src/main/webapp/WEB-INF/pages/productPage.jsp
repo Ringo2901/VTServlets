@@ -1,15 +1,19 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <jsp:useBean id="phone" scope="request" type="com.bsuir.aleksandrov.phoneshop.model.entities.phone.Phone"/>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="messages"/>
 <tags:master pageTitle="Phohe Details">
 
     <c:choose>
         <c:when test="${not empty sessionScope.inputErrors}">
             <div class="container">
                 <div class="panel panel-danger">
-                    <div class="panel-heading">Error</div>
-                    <div class="panel-body">There were some problems updating the cart!</div>
+                    <div class="panel-heading"><fmt:message key="error_title" /></div>
+                    <div class="panel-body"><fmt:message key="error_updating_cart" /></div>
                 </div>
             </div>
         </c:when>
@@ -17,7 +21,7 @@
             <c:if test="${not empty param.message}">
                 <div class="container">
                     <div class="panel panel-success">
-                        <div class="panel-heading">Success</div>
+                        <div class="panel-heading"><fmt:message key="success_title" /></div>
                         <div class="panel-body">${param.message}</div>
                     </div>
                 </div>
@@ -45,7 +49,7 @@
                         <input type="hidden" name="id" value="${phone.id}">
                         <input type="number" name="quantity" id="quantity${phone.id}" min="1" required>
 
-                        <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit">Add to cart</button>
+                        <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit"><fmt:message key="button_add" /></button>
                     </form>
                     <c:if test="${not empty sessionScope.inputErrors.get(phone.id)}">
                         <div class="error" style="color: red">${sessionScope.inputErrors.get(phone.id)}</div>
@@ -57,70 +61,70 @@
             <div class="col-1"></div>
 
             <div class="col-4">
-                <h3>Display</h3>
+                <h3><fmt:message key="phone_display" /></h3>
                 <table class="table table-bordered table-light container-fluid">
                     <tr>
-                        <td>Size</td>
+                        <td><fmt:message key="phone_display_size" /></td>
                         <td>${phone.displaySizeInches}"</td>
                     </tr>
                     <tr>
-                        <td>Resolution</td>
+                        <td><fmt:message key="phone_display_resolution" /></td>
                         <td>${phone.displayResolution}</td>
                     </tr>
                     <tr>
-                        <td>Technology</td>
+                        <td><fmt:message key="phone_display_technology" /></td>
                         <td>${phone.displayTechnology}</td>
                     </tr>
                     <tr>
-                        <td>Pixel density</td>
+                        <td><fmt:message key="phone_display_pixel" /></td>
                         <td>${phone.pixelDensity}</td>
                     </tr>
                 </table>
-                <h3>Dimensions & weight</h3>
+                <h3><fmt:message key="phone_dimensions" /></h3>
                 <table class="table table-bordered table-light container-fluid">
                     <tr>
-                        <td>Length</td>
+                        <td><fmt:message key="phone_dimensions_length" /></td>
                         <td>${phone.lengthMm} mm</td>
                     </tr>
                     <tr>
-                        <td>Width</td>
+                        <td><fmt:message key="phone_dimensions_width" /></td>
                         <td>${phone.widthMm} mm</td>
                     </tr>
                     <tr>
-                        <td>Weight</td>
+                        <td><fmt:message key="phone_dimensions_weight" /></td>
                         <td>${phone.weightGr} g</td>
                     </tr>
                 </table>
-                <h3>Camera</h3>
+                <h3><fmt:message key="phone_camera" /></h3>
                 <table class="table table-bordered table-light container-fluid">
                     <tr>
-                        <td>Front</td>
+                        <td><fmt:message key="phone_camera_front" /></td>
                         <td>${phone.frontCameraMegapixels}</td>
                     </tr>
                     <tr>
-                        <td>Back</td>
+                        <td><fmt:message key="phone_camera_back" /></td>
                         <td>${phone.backCameraMegapixels}</td>
                     </tr>
                 </table>
-                <h3>Battery</h3>
+                <h3><fmt:message key="phone_battery" /></h3>
                 <table class="table table-bordered table-light container-fluid">
                     <tr>
-                        <td>Talk time</td>
+                        <td><fmt:message key="phone_battery_talk" /></td>
                         <td>${phone.talkTimeHours} hours</td>
                     </tr>
                     <tr>
-                        <td>Stand by time</td>
+                        <td><fmt:message key="phone_battery_stand" /></td>
                         <td>${phone.standByTimeHours} hours</td>
                     </tr>
                     <tr>
-                        <td>Battery capacity</td>
+                        <td><fmt:message key="phone_battery_capacity" /></td>
                         <td>${phone.batteryCapacityMah} mAh</td>
                     </tr>
                 </table>
-                <h3>Other</h3>
+                <h3><fmt:message key="phone_other" /></h3>
                 <table class="table table-bordered table-light container-fluid">
                     <tr>
-                        <td class="align-middle">Colors</td>
+                        <td class="align-middle"><fmt:message key="phone_other_colors" /></td>
                         <td>
                             <ul>
                                 <c:forEach var="color" items="${phone.colors}">
@@ -130,11 +134,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Device type</td>
+                        <td><fmt:message key="phone_other_type" /></td>
                         <td>${phone.deviceType}</td>
                     </tr>
                     <tr>
-                        <td>Bluetooth</td>
+                        <td><fmt:message key="phone_other_bluetooth" /></td>
                         <td>${phone.bluetooth}</td>
                     </tr>
                 </table>

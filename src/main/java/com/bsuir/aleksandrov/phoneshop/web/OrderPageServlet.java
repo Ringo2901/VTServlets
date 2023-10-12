@@ -19,15 +19,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class OrderPageServlet extends HttpServlet {
     private OrderService orderService;
     private CartService cartService;
     private static final String ODER_ATTRIBUTE = "order";
     private static final String ORDER_JSP = "/WEB-INF/pages/orderPage.jsp";
-    private final String POSSIBLE_ERROR_MESSAGE_NO_FILLING = "This field must be filled in!";
-    private final String POSSIBLE_ERROR_MESSAGE_HAS_ERRORS_PHONE = "There were some errors in phone number!\nFormat: +(375)(29/44/25/33)(xxxxxxx)";
     private final String PHONE_VALIDATION_REG_EXP = "^(\\+375)(29|25|44|33)(\\d{3})(\\d{2})(\\d{2})$";
 
     @Override
@@ -69,29 +69,35 @@ public class OrderPageServlet extends HttpServlet {
     private Order fillClientData(HttpServletRequest request, Map<Integer, String> errorsMap) {
         Order order = orderService.createOrder(cartService.getCart(request));
         String field = request.getParameter("firstName");
+        Object lang = request.getSession().getAttribute("lang");
+        if (lang == null){
+            lang = "en";
+        }
+        Locale locale = new Locale(lang.toString());
+        ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         if (field == null || field.isEmpty()) {
-            errorsMap.put(1, POSSIBLE_ERROR_MESSAGE_NO_FILLING);
+            errorsMap.put(1, rb.getString("POSSIBLE_ERROR_MESSAGE_NO_FILLING"));
         } else {
             order.setFirstName(field);
         }
         field = request.getParameter("lastName");
         if (field == null || field.isEmpty()) {
-            errorsMap.put(2, POSSIBLE_ERROR_MESSAGE_NO_FILLING);
+            errorsMap.put(2,  rb.getString("POSSIBLE_ERROR_MESSAGE_NO_FILLING"));
         } else {
             order.setLastName(field);
         }
         field = request.getParameter("deliveryAddress");
         if (field == null || field.isEmpty()) {
-            errorsMap.put(3, POSSIBLE_ERROR_MESSAGE_NO_FILLING);
+            errorsMap.put(3,  rb.getString("POSSIBLE_ERROR_MESSAGE_NO_FILLING"));
         } else {
             order.setDeliveryAddress(field);
         }
         field = request.getParameter("contactPhoneNo");
         if (field == null || field.isEmpty()) {
-            errorsMap.put(4, POSSIBLE_ERROR_MESSAGE_NO_FILLING);
+            errorsMap.put(4,  rb.getString("POSSIBLE_ERROR_MESSAGE_NO_FILLING"));
         } else {
             if (!field.matches(PHONE_VALIDATION_REG_EXP)) {
-                errorsMap.put(4, POSSIBLE_ERROR_MESSAGE_HAS_ERRORS_PHONE);
+                errorsMap.put(4, rb.getString("POSSIBLE_ERROR_MESSAGE_HAS_ERRORS_PHONE"));
             } else {
                 order.setContactPhoneNo(field);
             }

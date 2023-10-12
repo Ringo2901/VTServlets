@@ -1,17 +1,21 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <jsp:useBean id="cart" scope="session" type="com.bsuir.aleksandrov.phoneshop.model.entities.cart.Cart"/>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="messages"/>
 <tags:master pageTitle="Cart">
     <p></p>
     <div class="container">
-        <h2>Cart</h2>
+        <h2><fmt:message key= "cart_title"/></h2>
     </div>
     <c:choose>
         <c:when test="${not empty inputErrors}">
             <div class="container">
                 <div class="panel panel-danger">
-                    <div class="panel-heading">Error</div>
+                    <div class="panel-heading"><fmt:message key="error_title" /></div>
                     <div class="panel-body">There were some problems updating the cart!</div>
                 </div>
             </div>
@@ -20,7 +24,7 @@
             <c:if test="${not empty param.message}">
                 <div class="container">
                     <div class="panel panel-success">
-                        <div class="panel-heading">Error</div>
+                        <div class="panel-heading"><fmt:message key="success_title" /></div>
                         <div class="panel-body">${param.message}</div>
                     </div>
                 </div>
@@ -41,7 +45,7 @@
                             <form action="/user/authorisation" method="get">
                         </c:otherwise>
                     </c:choose>
-                    <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit">Order</button>
+                    <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit"><fmt:message key="button_order" /></button>
                 </form>
                     <c:choose>
                         <c:when test="${not empty sessionScope.login}">
@@ -55,12 +59,12 @@
                     <table class="table table-hover table-bordered text-center">
                         <thead>
                         <tr class="bg-light">
-                            <th>Brand</th>
-                            <th>Model</th>
-                            <th>Color</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Action</th>
+                            <th><fmt:message key="item_brand" /></th>
+                            <th><fmt:message key="item_model" /></th>
+                            <th><fmt:message key="item_Color" /></th>
+                            <th><fmt:message key="item.price" /></th>
+                            <th><fmt:message key="item_quantity" /></th>
+                            <th><fmt:message key="table_action" /></th>
                         </tr>
                         </thead>
                         <c:forEach var="cartItem" items="${cart.items}">
@@ -83,13 +87,13 @@
                                 </td>
                                 <td>
                                     <input type="hidden" name="id" value="${cartItem.phone.id}">
-                                    <button class="btn btn-danger" type="button" onclick="deleteCartItem(${cartItem.phone.id})">Delete</button>
+                                    <button class="btn btn-danger" type="button" onclick="deleteCartItem(${cartItem.phone.id})"><fmt:message key="button_delete" /></button>
                                 </td>
                             </tr>
                         </c:forEach>
                     </table>
-                    <p>Total Price: $ ${cart.totalCost}</p>
-                    <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="button" onclick="updateCart()">Update</button>
+                    <p><fmt:message key="order_total_price" />: $ ${cart.totalCost}</p>
+                    <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="button" onclick="updateCart()"><fmt:message key="button_update" /></button>
                 </form>
             </c:if>
         </div>

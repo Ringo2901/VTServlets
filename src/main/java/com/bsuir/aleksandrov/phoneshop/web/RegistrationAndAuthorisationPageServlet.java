@@ -13,13 +13,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class RegistrationAndAuthorisationPageServlet extends HttpServlet {
     UserDao userDao;
     private static final String REGISTRATION_JSP = "/WEB-INF/pages/registrationPage.jsp";
     private static final String AUTHORISATION_JSP = "/WEB-INF/pages/authorisationPage.jsp";
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -47,7 +48,7 @@ public class RegistrationAndAuthorisationPageServlet extends HttpServlet {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         if (operation.equals("registration")) {
-            request.setAttribute("messages", registration(login, password));
+            request.setAttribute("messages", registration(login, password, request));
         } else {
             if (operation.equals("authorisation")) {
                 request.setAttribute("messages", login(request, login, password));
@@ -56,20 +57,26 @@ public class RegistrationAndAuthorisationPageServlet extends HttpServlet {
         doGet(request, response);
     }
 
-    private Map<String, String> registration(String login, String password) {
+    private Map<String, String> registration(String login, String password, HttpServletRequest request) {
         User user = new User(UserRole.User, login, password);
-        return userDao.addUser(user);
+        return userDao.addUser(user, request);
     }
 
     private Map<String, String> login(HttpServletRequest request, String login, String password) {
         User user = userDao.findUserByLoginAndPass(login, password).orElse(null);
+        Object lang = request.getSession().getAttribute("lang");
+        if (lang == null){
+            lang = "en";
+        }
+        Locale locale = new Locale(lang.toString());
+        ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         Map<String, String> messages = new HashMap<>();
         if (user == null) {
-            messages.put("error", "The user does not exist");
+            messages.put("error", rb.getString("AUTHORISATION_ERROR"));
         } else {
             request.getSession().setAttribute("role", user.getUserRole().toString());
             request.getSession().setAttribute("login", user.getLogin());
-            messages.put("success", "Authorization was successful");
+            messages.put("success", rb.getString("AUTHORISATION_SUCCESS"));
         }
         return messages;
     }

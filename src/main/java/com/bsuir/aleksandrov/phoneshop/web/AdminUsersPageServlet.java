@@ -13,14 +13,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class AdminUsersPageServlet extends HttpServlet {
     private static final String ADMIN_ORDERS_PAGE_JSP = "/WEB-INF/pages/adminUsersPage.jsp";
     private static final String USERS_ATTRIBUTE = "users";
     private static final String SUCCESS_ATTRIBUTE = "successMessage";
     private static final String ERROR_ATTRIBUTE = "errorMessage";
-    private static final String SUCCESS_MESSAGE = "Successfully user delete";
-    private static final String ERROR_MESSAGE = "There was an error";
     private UserDao userDao;
 
     @Override
@@ -39,11 +39,17 @@ public class AdminUsersPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long userId = Long.valueOf(request.getParameter("userId"));
         User user = userDao.findUser(userId).orElse(null);
+        Object lang = request.getSession().getAttribute("lang");
+        if (lang == null){
+            lang = "en";
+        }
+        Locale locale = new Locale(lang.toString());
+        ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         if (user != null) {
             userDao.deleteUser(user);
-            request.setAttribute(SUCCESS_ATTRIBUTE, SUCCESS_MESSAGE);
+            request.setAttribute(SUCCESS_ATTRIBUTE, rb.getString("user_delete_success"));
         } else {
-            request.setAttribute(ERROR_ATTRIBUTE, ERROR_MESSAGE);
+            request.setAttribute(ERROR_ATTRIBUTE, rb.getString("error_message"));
         }
         doGet(request, response);
     }

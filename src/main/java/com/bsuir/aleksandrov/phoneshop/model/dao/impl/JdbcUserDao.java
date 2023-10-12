@@ -4,7 +4,9 @@ import com.bsuir.aleksandrov.phoneshop.model.dao.UserDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.UsersExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
+import jakarta.servlet.http.HttpServletRequest;
 
+import java.net.http.HttpRequest;
 import java.sql.*;
 import java.util.*;
 
@@ -19,8 +21,8 @@ public class JdbcUserDao implements UserDao {
     private static String ADD_USER = "INSERT INTO users (login, password, role) VALUES (?, ?, ?)";
     private static String MESSAGE_KEY_SUCCESS = "success";
     private static String MESSAGE_KEY_ERROR = "error";
-    private static String MESSAGE_SUCCESS = "Registration success!";
-    private static String MESSAGE_ERROR = "A user with this login already exists";
+    private static String REGISTRATION_SUCCESS = "Registration success!";
+    private static String REGISTRATION_ERROR = "A user with this login already exists";
     ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public static UserDao getInstance() {
@@ -96,10 +98,16 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public Map<String, String> addUser(User user) {
+    public Map<String, String> addUser(User user, HttpServletRequest request) {
         Connection conn = null;
         PreparedStatement statement = null;
         Map<String, String> messages = new HashMap<>();
+        Object lang = request.getSession().getAttribute("lang");
+        if (lang == null){
+            lang = "en";
+        }
+        Locale locale = new Locale(lang.toString());
+        ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         try {
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(FIND_USER_WITH_LOGIN);
@@ -111,9 +119,9 @@ public class JdbcUserDao implements UserDao {
                 statement.setString(2, user.getPassword());
                 statement.setString(3, user.getUserRole().toString());
                 statement.executeUpdate();
-                messages.put(MESSAGE_KEY_SUCCESS, MESSAGE_SUCCESS);
+                messages.put(MESSAGE_KEY_SUCCESS, rb.getString("REGISTRATION_SUCCESS"));
             } else {
-                messages.put(MESSAGE_KEY_ERROR, MESSAGE_ERROR);
+                messages.put(MESSAGE_KEY_ERROR, rb.getString("REGISTRATION_ERROR"));
             }
             // LOGGER.log(Level.INFO, "Found {0} phones in the database");
         } catch (SQLException ex) {

@@ -1,14 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 
 <jsp:useBean id="order" scope="request" type="com.bsuir.aleksandrov.phoneshop.model.entities.order.Order"/>
-
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="messages"/>
 <tags:master pageTitle="Order">
 
     <p></p>
     <div class="container">
-        <h2>Cart</h2>
+        <h2><fmt:message key="cart_title" /></h2>
     </div>
     <div id="statusMessage" class="container"><span></span></div
     <c:if test="${not empty errorsMap.get(Integer(0))}">
@@ -29,22 +32,22 @@
                 <thead>
                 <tr class="bg-light">
                     <td>
-                        Brand
+                        <fmt:message key="item_brand" />
                     </td>
                     <td>
-                        Model
+                        <fmt:message key="item_model" />
                     </td>
                     <td>
-                        Color
+                        <fmt:message key="item_Color" />
                     </td>
                     <td>
-                        Display size
+                        <fmt:message key="item_Display_Size" />
                     </td>
                     <td>
-                        Quantity
+                        <fmt:message key="item_quantity" />
                     </td>
                     <td>
-                        Price
+                        <fmt:message key="item.price" />
                     </td>
                 </tr>
                 </thead>
@@ -78,7 +81,7 @@
                 <tr>
                     <td class="border-white"></td><td class="border-white"></td><td class="border-white"></td><td class="border-white"></td>
                     <td>
-                        Subtotal
+                        <fmt:message key="order_subtotal" />
                     </td>
                     <td>
                             ${order.subtotal}
@@ -87,7 +90,7 @@
                 <tr>
                     <td class="border-white"></td><td class="border-white"></td><td class="border-white"></td><td class="border-white"></td>
                     <td>
-                        Delivery
+                        <fmt:message key="order_delivery" />
                     </td>
                     <td>
                             ${order.deliveryPrice}
@@ -96,7 +99,7 @@
                 <tr>
                     <td class="border-white"></td><td class="border-white"></td><td class="border-white"></td><td class="border-white"></td>
                     <td>
-                        TOTAL
+                        <fmt:message key="order_total_price" />
                     </td>
                     <td>
                             ${order.totalPrice}
@@ -115,7 +118,7 @@
                 <table class="table-borderless">
                     <tr>
                         <td class="align-top">
-                            First name*:
+                            <fmt:message key="user_first_name" />*:
                         </td>
                         <td>
                             <input name="firstName" placeholder="First name" required/>
@@ -126,7 +129,7 @@
                     </tr>
                     <tr>
                         <td class="align-top">
-                            Last name*:
+                            <fmt:message key="user_last_name" />*:
                         </td>
                         <td>
                             <input name="lastName" placeholder="Last name" required/>
@@ -137,7 +140,7 @@
                     </tr>
                     <tr>
                         <td class="align-top">
-                            Delivery address*:
+                            <fmt:message key="user_delivery_address" />*:
                         </td>
                         <td>
                             <input name="deliveryAddress" placeholder="Address" required/>
@@ -148,7 +151,7 @@
                     </tr>
                     <tr>
                         <td class="align-top">
-                            Contact phone*:
+                            <fmt:message key="user_contact_phone" />*:
                         </td>
                         <td>
                             <input name="contactPhoneNo" placeholder="+375296789012" required/>
@@ -158,9 +161,9 @@
                         </td>
                     </tr>
                 </table>
-                <textarea name="additionalInformation" placeholder="Additional information"></textarea>
+                <textarea name="additionalInformation" placeholder=<fmt:message key="order_additional_information" />></textarea>
                 <br>
-                <button class="btn btn-light" type="submit">Order</button>
+                <button class="btn btn-light" type="submit"><fmt:message key="button_order" /></button>
             </form>
         </div>
 

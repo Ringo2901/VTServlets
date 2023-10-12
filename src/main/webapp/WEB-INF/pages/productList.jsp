@@ -1,17 +1,23 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%@ page isELIgnored="false"%>
 <jsp:useBean id="phones" scope="request" type="java.util.List"/>
 <jsp:useBean id="numberOfPages" scope="request" type="java.lang.Long"/>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="messages"/>
 <tags:master pageTitle="Phohe List">
   <p></p>
+  <fmt:setLocale value="${sessionScope.lang}"/>
+  <fmt:setBundle basename="messages"/>
   <c:choose>
     <c:when test="${not empty sessionScope.inputErrors}">
       <div class="container">
         <div class="panel panel-danger">
-          <div class="panel-heading">Error</div>
-          <div class="panel-body">There were some problems updating the cart!</div>
+          <div class="panel-heading"><fmt:message key="error_title" /></div>
+          <div class="panel-body"><fmt:message key="error_updating_cart" /></div>
         </div>
       </div>
     </c:when>
@@ -19,7 +25,7 @@
       <c:if test="${not empty param.message}">
         <div class="container">
           <div class="panel panel-success">
-            <div class="panel-heading">Success</div>
+            <div class="panel-heading"><fmt:message key="success_title" /></div>
             <div class="panel-body">${param.message}</div>
           </div>
         </div>
@@ -32,7 +38,7 @@
       <div class="container">
         <form class="float-right">
           <input name="query" value="${param.query}">
-          <button class="btn btn-light">Search</button>
+          <button class="btn btn-light"><fmt:message key="button_search" /></button>
         </form>
       </div>
     </div>
@@ -44,27 +50,27 @@
       <table class="table table-hover table-bordered text-center">
         <thead>
         <tr class="bg-light">
-          <td>Image</td>
+          <td><fmt:message key="phone_image" /></td>
           <td>
-            Brand
+            <fmt:message key="item_brand" />
             <tags:sortLink sort="brand" order="asc"/><tags:sortLink sort="brand" order="desc"/>
           </td>
           <td>
-            Model
+            <fmt:message key="item_model" />
             <tags:sortLink sort="model" order="asc"/><tags:sortLink sort="model" order="desc"/>
           </td>
-          <td>Color</td>
+          <td><fmt:message key="item_Color" /></td>
           <td>
-            Display size
+            <fmt:message key="item_Display_Size" />
             <tags:sortLink sort="displaySizeInches" order="asc"/>
             <tags:sortLink sort="displaySizeInches" order="desc"/>
           </td>
           <td>
-            Price
+            <fmt:message key="item.price" />
             <tags:sortLink sort="price" order="asc"/>
             <tags:sortLink sort="price" order="desc"/>
           </td>
-          <td>Action</td>
+          <td><fmt:message key="table_action" /></td>
         </tr>
         </thead>
         <c:forEach var="phone" items="${phones}">
@@ -99,7 +105,7 @@
                 <input type="hidden" name="addOperation" value="add">
                 <input type="hidden" name="id" value="${phone.id}">
                 <input type="number" name="quantity" id="quantity${phone.id}" min="1" required>
-                <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit">Add to cart</button>
+                <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit" style="font-size: 14px"><fmt:message key="button_add" /></button>
               </form>
               <c:if test="${not empty sessionScope.inputErrors.get(phone.id)}">
                 <div class="error" style="color: red">${sessionScope.inputErrors[phone.id]}</div>

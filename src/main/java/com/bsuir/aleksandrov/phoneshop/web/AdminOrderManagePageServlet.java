@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class AdminOrderManagePageServlet extends HttpServlet {
     private static final String ADMIN_ORDERS_PAGE_JSP = "/WEB-INF/pages/adminOrderManagePage.jsp";
@@ -20,8 +22,6 @@ public class AdminOrderManagePageServlet extends HttpServlet {
     private static final String ORDER_ATTRIBUTE = "order";
     private static final String SUCCESS_ATTRIBUTE = "successMessage";
     private static final String ERROR_ATTRIBUTE = "errorMessage";
-    private static final String SUCCESS_MESSAGE = "Successfully change status";
-    private static final String ERROR_MESSAGE = "There was an error";
     private OrderDao orderDao;
     private OrderService orderService;
 
@@ -47,11 +47,17 @@ public class AdminOrderManagePageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = Long.parseLong(request.getPathInfo().substring(1));
         OrderStatus newStatus = OrderStatus.fromString(request.getParameter("status"));
+        Object lang = request.getSession().getAttribute("lang");
+        if (lang == null){
+            lang = "en";
+        }
+        Locale locale = new Locale(lang.toString());
+        ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         if (newStatus != null) {
             orderService.changeOrderStatus(id, newStatus);
-            request.setAttribute(SUCCESS_ATTRIBUTE, SUCCESS_MESSAGE);
+            request.setAttribute(SUCCESS_ATTRIBUTE, rb.getString("status_change_success"));
         } else {
-            request.setAttribute(ERROR_ATTRIBUTE, ERROR_MESSAGE);
+            request.setAttribute(ERROR_ATTRIBUTE, rb.getString("error_message"));
         }
         request.setAttribute(ORDER_ATTRIBUTE, orderDao.getById(id).orElse(null));
         doGet(request, response);
