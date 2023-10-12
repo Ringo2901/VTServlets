@@ -1,9 +1,5 @@
 package com.bsuir.aleksandrov.phoneshop.model.utils;
 
-import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
-import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcPhoneDao;
-
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,7 +16,8 @@ public class ConnectionPool {
     private final int maxConnections = 10;
     private final List<Connection> connectionPool;
     private final List<Connection> usedConnections = new ArrayList<>();
-    public synchronized static ConnectionPool getInstance(){
+
+    public synchronized static ConnectionPool getInstance() {
         if (instance == null) {
             synchronized (ConnectionPool.class) {
                 if (instance == null) {
@@ -30,10 +27,11 @@ public class ConnectionPool {
         }
         return instance;
     }
+
     public ConnectionPool() {
         ResourceBundle bundle = ResourceBundle.getBundle("database");
         url = bundle.getString("db.url") + bundle.getString("db.name");
-        user= bundle.getString("db.user");
+        user = bundle.getString("db.user");
         password = bundle.getString("db.password");
         this.connectionPool = new ArrayList<>(maxConnections);
     }

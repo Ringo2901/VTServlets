@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface OrderService {
     Order createOrder(Cart cart);
+
     void placeOrder(Order order, HttpServletRequest request) throws OutOfStockException;
+
     void changeOrderStatus(Long id, OrderStatus status);
 }

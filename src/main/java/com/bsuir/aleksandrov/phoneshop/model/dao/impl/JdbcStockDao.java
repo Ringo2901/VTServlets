@@ -1,6 +1,5 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
-import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.StockDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.stock.Stock;
 import com.bsuir.aleksandrov.phoneshop.model.entities.stock.StocksExtractor;
@@ -17,6 +16,7 @@ public class JdbcStockDao implements StockDao {
     private static volatile StockDao instance;
     private static final String GET_STOCK_BY_ID = "SELECT * FROM stocks WHERE phoneId = ?";
     private static final String UPDATE_STOCK = "UPDATE stocks SET reserved = ? WHERE phoneId = ?";
+
     public static StockDao getInstance() {
         if (instance == null) {
             synchronized (StockDao.class) {
@@ -27,6 +27,7 @@ public class JdbcStockDao implements StockDao {
         }
         return instance;
     }
+
     @Override
     public Integer availableStock(Long phoneId) {
         Stock stock = getStock(phoneId);
@@ -69,7 +70,7 @@ public class JdbcStockDao implements StockDao {
         }
     }
 
-    private Stock getStock(Long phoneId){
+    private Stock getStock(Long phoneId) {
         Stock stock = null;
         Connection conn = null;
         PreparedStatement statement = null;

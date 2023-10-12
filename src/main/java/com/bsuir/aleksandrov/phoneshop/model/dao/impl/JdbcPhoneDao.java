@@ -1,10 +1,10 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
 import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
-import com.bsuir.aleksandrov.phoneshop.model.enums.SortField;
-import com.bsuir.aleksandrov.phoneshop.model.enums.SortOrder;
 import com.bsuir.aleksandrov.phoneshop.model.entities.phone.Phone;
 import com.bsuir.aleksandrov.phoneshop.model.entities.phone.PhonesExtractor;
+import com.bsuir.aleksandrov.phoneshop.model.enums.SortField;
+import com.bsuir.aleksandrov.phoneshop.model.enums.SortOrder;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 
 import java.sql.*;
@@ -113,7 +113,7 @@ public class JdbcPhoneDao implements PhoneDao {
         Connection conn = null;
         Statement statement = null;
         try {
-            conn = connectionPool.getConnection() ;
+            conn = connectionPool.getConnection();
             statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
             if (rs.next()) {
@@ -122,8 +122,7 @@ public class JdbcPhoneDao implements PhoneDao {
         } catch (SQLException ex) {
             ex.printStackTrace();
             // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
-        }
-        finally {
+        } finally {
             if (statement != null) {
                 try {
                     statement.close();

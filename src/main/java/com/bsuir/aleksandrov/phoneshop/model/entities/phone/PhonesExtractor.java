@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class PhonesExtractor {
     ColorDao colorDao = new JdbcColorDao();
+
     public List<Phone> extractData(ResultSet resultSet) throws SQLException {
         List<Phone> phones = new ArrayList<>();
         while (resultSet.next()) {

@@ -14,7 +14,7 @@ import java.net.http.HttpRequest;
 public class UserOrdersPageServlet extends HttpServlet {
     private static final String ADMIN_ORDERS_PAGE_JSP = "/WEB-INF/pages/userOrders.jsp";
     private OrderDao orderDao;
-
+    private static final String ORDERS_ATTRIBUTE = "orders";
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -23,7 +23,7 @@ public class UserOrdersPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("orders", orderDao.findOrdersByLogin(request.getSession().getAttribute("login").toString()));
+        request.setAttribute(ORDERS_ATTRIBUTE, orderDao.findOrdersByLogin(request.getSession().getAttribute("login").toString()));
         request.getRequestDispatcher(ADMIN_ORDERS_PAGE_JSP).forward(request, response);
     }
 }

@@ -7,9 +7,13 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface UserDao {
-    Optional<User> findUser (Long id);
-    Optional<User> findUserByLoginAndPass (String login, String password);
-    Map<String, String> addUser (User user);
-    void deleteUser (User user);
-    List<User> findAllUsers ();
+    Optional<User> findUser(Long id);
+
+    Optional<User> findUserByLoginAndPass(String login, String password);
+
+    Map<String, String> addUser(User user);
+
+    void deleteUser(User user);
+
+    List<User> findAllUsers();
 }

@@ -1,7 +1,6 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
 import com.bsuir.aleksandrov.phoneshop.model.dao.UserDao;
-import com.bsuir.aleksandrov.phoneshop.model.entities.stock.Stock;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.UsersExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
@@ -18,6 +17,10 @@ public class JdbcUserDao implements UserDao {
     private static String FIND_ALL_USERS = "SELECT * FROM users WHERE role = 'User'";
     private static String DELETE_USER = "DELETE FROM users WHERE login = ? AND password = ?";
     private static String ADD_USER = "INSERT INTO users (login, password, role) VALUES (?, ?, ?)";
+    private static String MESSAGE_KEY_SUCCESS = "success";
+    private static String MESSAGE_KEY_ERROR = "error";
+    private static String MESSAGE_SUCCESS = "Registration success!";
+    private static String MESSAGE_ERROR = "A user with this login already exists";
     ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public static UserDao getInstance() {
@@ -93,7 +96,7 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public  Map<String, String> addUser(User user) {
+    public Map<String, String> addUser(User user) {
         Connection conn = null;
         PreparedStatement statement = null;
         Map<String, String> messages = new HashMap<>();
@@ -108,9 +111,9 @@ public class JdbcUserDao implements UserDao {
                 statement.setString(2, user.getPassword());
                 statement.setString(3, user.getUserRole().toString());
                 statement.executeUpdate();
-                messages.put("success", "Registration success!");
-            } else{
-                messages.put("error", "A user with this login already exists");
+                messages.put(MESSAGE_KEY_SUCCESS, MESSAGE_SUCCESS);
+            } else {
+                messages.put(MESSAGE_KEY_ERROR, MESSAGE_ERROR);
             }
             // LOGGER.log(Level.INFO, "Found {0} phones in the database");
         } catch (SQLException ex) {

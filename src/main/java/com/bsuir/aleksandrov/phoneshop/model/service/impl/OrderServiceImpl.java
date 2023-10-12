@@ -26,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     private StockDao stockDao = JdbcStockDao.getInstance();
     private OrderDao orderDao = JdbcOrderDao.getInstance();
     private static volatile OrderService instance;
+
     public static OrderService getInstance() {
         if (instance == null) {
             synchronized (OrderService.class) {
@@ -60,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
         orderDao.save(order);
         cartService.clear(request);
     }
+
     @Override
     public void changeOrderStatus(Long id, OrderStatus status) {
         orderDao.changeStatus(id, status);

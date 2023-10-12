@@ -12,6 +12,7 @@ import java.io.IOException;
 
 public class AdminOrdersPageServlet extends HttpServlet {
     private static final String ADMIN_ORDERS_PAGE_JSP = "/WEB-INF/pages/adminOrdersPage.jsp";
+    private static final String ORDERS_ATTRIBUTE = "orders";
     private OrderDao orderDao;
 
     @Override
@@ -22,7 +23,7 @@ public class AdminOrdersPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("orders", orderDao.findOrders());
+        request.setAttribute(ORDERS_ATTRIBUTE, orderDao.findOrders());
         request.getRequestDispatcher(ADMIN_ORDERS_PAGE_JSP).forward(request, response);
     }
 }

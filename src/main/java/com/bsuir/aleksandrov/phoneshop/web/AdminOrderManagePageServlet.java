@@ -18,6 +18,10 @@ public class AdminOrderManagePageServlet extends HttpServlet {
     private static final String ADMIN_ORDERS_PAGE_JSP = "/WEB-INF/pages/adminOrderManagePage.jsp";
     private static final String ORDER_NOT_FOUND_PAGE_JSP = "/WEB-INF/pages/OrderNotFoundPage.jsp";
     private static final String ORDER_ATTRIBUTE = "order";
+    private static final String SUCCESS_ATTRIBUTE = "successMessage";
+    private static final String ERROR_ATTRIBUTE = "errorMessage";
+    private static final String SUCCESS_MESSAGE = "Successfully change status";
+    private static final String ERROR_MESSAGE = "There was an error";
     private OrderDao orderDao;
     private OrderService orderService;
 
@@ -45,11 +49,11 @@ public class AdminOrderManagePageServlet extends HttpServlet {
         OrderStatus newStatus = OrderStatus.fromString(request.getParameter("status"));
         if (newStatus != null) {
             orderService.changeOrderStatus(id, newStatus);
-            request.setAttribute("successMessage", "Successfully change status");
+            request.setAttribute(SUCCESS_ATTRIBUTE, SUCCESS_MESSAGE);
         } else {
-            request.setAttribute("errorMessage", "There was an error");
+            request.setAttribute(ERROR_ATTRIBUTE, ERROR_MESSAGE);
         }
-        request.setAttribute("order", orderDao.getById(id).orElse(null));
+        request.setAttribute(ORDER_ATTRIBUTE, orderDao.getById(id).orElse(null));
         doGet(request, response);
     }
 }

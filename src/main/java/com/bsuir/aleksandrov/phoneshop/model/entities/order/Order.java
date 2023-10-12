@@ -5,8 +5,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
-public class Order
-{
+public class Order {
     private Long id;
     private String secureID;
     private List<OrderItem> orderItems;

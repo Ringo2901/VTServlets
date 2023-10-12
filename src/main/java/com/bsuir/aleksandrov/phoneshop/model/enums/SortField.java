@@ -7,6 +7,7 @@ public enum SortField {
     model,
     displaySizeInches,
     price;
+
     public static SortField getValue(String name) {
         return Arrays.stream(SortField.values())
                 .filter(value -> value.name().equals(name))

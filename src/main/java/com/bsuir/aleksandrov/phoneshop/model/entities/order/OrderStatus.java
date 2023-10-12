@@ -2,6 +2,7 @@ package com.bsuir.aleksandrov.phoneshop.model.entities.order;
 
 public enum OrderStatus {
     NEW, DELIVERED, REJECTED;
+
     @Override
     public String toString() {
         switch (this) {
@@ -15,6 +16,7 @@ public enum OrderStatus {
                 return "UNKNOWN";
         }
     }
+
     public static OrderStatus fromString(String status) {
         for (OrderStatus orderStatus : values()) {
             if (orderStatus.toString().equalsIgnoreCase(status)) {

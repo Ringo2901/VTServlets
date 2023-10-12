@@ -1,7 +1,6 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
 import com.bsuir.aleksandrov.phoneshop.model.dao.OrderItemDao;
-import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItem;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItemsExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
@@ -11,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 public class JdbcOrderItemDao implements OrderItemDao {
     private static final String GET_ORDER_ITEMS = "SELECT * FROM order2item WHERE orderId = ?";

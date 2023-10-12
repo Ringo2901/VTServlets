@@ -5,7 +5,10 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.color.Color;
 import com.bsuir.aleksandrov.phoneshop.model.entities.color.ColorsExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

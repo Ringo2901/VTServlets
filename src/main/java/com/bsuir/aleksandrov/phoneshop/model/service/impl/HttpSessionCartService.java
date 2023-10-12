@@ -17,8 +17,9 @@ import java.util.Optional;
 
 public class HttpSessionCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = HttpSessionCartService.class.getName() + ".cart";
+    private static final String CART_ATTRIBUTE = "cart";
     private static volatile HttpSessionCartService instance;
-    private String ERROR_MESSAGE = "No such product with given code";
+    private static final String ERROR_MESSAGE = "No such product with given code";
     private PhoneDao phoneDao;
     private StockDao stockDao;
 
@@ -70,7 +71,7 @@ public class HttpSessionCartService implements CartService {
                             setQuantity(productMatch.get().getQuantity() + quantity);
                 } else {
                     cart.getItems().add(new CartItem(phone, quantity));
-                    currentSession.setAttribute("cart", cart);
+                    currentSession.setAttribute(CART_ATTRIBUTE, cart);
                 }
                 reCalculateCart(cart);
             }
