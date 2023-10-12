@@ -4,6 +4,8 @@ import com.bsuir.aleksandrov.phoneshop.model.dao.ColorDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.color.Color;
 import com.bsuir.aleksandrov.phoneshop.model.entities.color.ColorsExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcColorDao implements ColorDao {
+    private static final Logger log = Logger.getLogger(ColorDao.class);
     private final ColorsExtractor colorExtractor = new ColorsExtractor();
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
     private static final String GET_QUERY = "select COLORS.ID, COLORS.CODE " +
@@ -31,16 +34,16 @@ public class JdbcColorDao implements ColorDao {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             colors = colorExtractor.extractData(resultSet);
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found colors in the database");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+             log.log(Level.ERROR, "Error in getColors", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {

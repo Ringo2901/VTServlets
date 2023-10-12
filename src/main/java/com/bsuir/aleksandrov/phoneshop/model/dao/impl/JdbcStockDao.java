@@ -1,9 +1,12 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
+import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.StockDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.stock.Stock;
 import com.bsuir.aleksandrov.phoneshop.model.entities.stock.StocksExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class JdbcStockDao implements StockDao {
+    private static final Logger log = Logger.getLogger(StockDao.class);
     private StocksExtractor stocksExtractor = new StocksExtractor();
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
     private static volatile StockDao instance;
@@ -51,16 +55,15 @@ public class JdbcStockDao implements StockDao {
                 statement.setLong(2, phoneId);
                 statement.setLong(1, newReserved);
                 statement.execute();
-                // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+                log.log(Level.INFO, "Update reserve stock in the database");
             } catch (SQLException ex) {
-                ex.printStackTrace();
-                // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+                log.log(Level.ERROR, "Error in reserve", ex);
             } finally {
                 if (statement != null) {
                     try {
                         statement.close();
                     } catch (SQLException ex) {
-                        ex.printStackTrace();
+                        log.log(Level.ERROR, "Error in closing statement", ex);
                     }
                 }
                 if (conn != null) {
@@ -80,16 +83,16 @@ public class JdbcStockDao implements StockDao {
             statement.setLong(1, phoneId);
             ResultSet resultSet = statement.executeQuery();
             stock = stocksExtractor.extractData(resultSet).get(0);
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found stock by phoneId in the database");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in getStock", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {

@@ -1,11 +1,14 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
+import com.bsuir.aleksandrov.phoneshop.model.dao.OrderItemDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.phone.Phone;
 import com.bsuir.aleksandrov.phoneshop.model.entities.phone.PhonesExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.enums.SortField;
 import com.bsuir.aleksandrov.phoneshop.model.enums.SortOrder;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class JdbcPhoneDao implements PhoneDao {
+    private static final Logger log = Logger.getLogger(PhoneDao.class);
     private PhonesExtractor phonesExtractor = new PhonesExtractor();
     private static volatile PhoneDao instance;
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
@@ -47,16 +51,15 @@ public class JdbcPhoneDao implements PhoneDao {
             statement.setLong(1, key);
             ResultSet resultSet = statement.executeQuery();
             phone = phonesExtractor.extractData(resultSet).stream().findAny();
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found phones by id in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in get function", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -79,16 +82,15 @@ public class JdbcPhoneDao implements PhoneDao {
             statement.setInt(2, limit);
             ResultSet resultSet = statement.executeQuery();
             phones = phonesExtractor.extractData(resultSet);
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found all phones in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in findAll", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -119,15 +121,15 @@ public class JdbcPhoneDao implements PhoneDao {
             if (rs.next()) {
                 return rs.getLong(1);
             }
+            log.log(Level.INFO, "Found count of phones");
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in numberByQuery", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {

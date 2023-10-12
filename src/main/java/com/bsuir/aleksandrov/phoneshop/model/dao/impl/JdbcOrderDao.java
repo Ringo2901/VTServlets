@@ -1,17 +1,21 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
+import com.bsuir.aleksandrov.phoneshop.model.dao.ColorDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.OrderDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItem;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrdersExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
 public class JdbcOrderDao implements OrderDao {
+    private static final Logger log = Logger.getLogger(OrderDao.class);
     private static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE id = ?";
     private static final String GET_ORDER_BY_SECURE_ID = "SELECT * FROM orders WHERE secureID = ?";
     private static final String SAVE_ORDER = "INSERT INTO orders (secureID, subtotal, deliveryPrice, " +
@@ -50,16 +54,16 @@ public class JdbcOrderDao implements OrderDao {
             statement.setLong(1, key);
             ResultSet resultSet = statement.executeQuery();
             order = ordersExtractor.extractData(resultSet).stream().findAny();
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found order by id in the database");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in getById", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -80,16 +84,16 @@ public class JdbcOrderDao implements OrderDao {
             statement.setString(1, secureID);
             ResultSet resultSet = statement.executeQuery();
             order = ordersExtractor.extractData(resultSet).stream().findAny();
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found orders by secureId in the database");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in getBySecureID", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -109,16 +113,16 @@ public class JdbcOrderDao implements OrderDao {
             statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(GET_ALL_ORDERS);
             orders = ordersExtractor.extractData(resultSet);
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found all orders in the database");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in findOrders", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -139,16 +143,16 @@ public class JdbcOrderDao implements OrderDao {
             statement.setString(1, login);
             ResultSet resultSet = statement.executeQuery();
             orders = ordersExtractor.extractData(resultSet);
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found orders by login in the database");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in findOrdersByLogin", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -168,16 +172,16 @@ public class JdbcOrderDao implements OrderDao {
             statement.setLong(2, id);
             statement.setString(1, status.toString());
             statement.executeUpdate();
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Status changed in the database");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in changeStatus", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -221,15 +225,16 @@ public class JdbcOrderDao implements OrderDao {
                 for (OrderItem orderItem : order.getOrderItems()) {
                     addOrderItem(conn, orderId, orderItem.getPhone().getId(), orderItem.getQuantity());
                 }
+                log.log(Level.INFO, "Order save");
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            log.log(Level.ERROR, "Error in order save", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {

@@ -1,16 +1,20 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
+import com.bsuir.aleksandrov.phoneshop.model.dao.StockDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.UserDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.UsersExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.net.http.HttpRequest;
 import java.sql.*;
 import java.util.*;
 
 public class JdbcUserDao implements UserDao {
+    private static final Logger log = Logger.getLogger(UserDao.class);
     private static volatile UserDao instance;
     private UsersExtractor usersExtractor = new UsersExtractor();
     private static String FIND_USER = "SELECT * FROM users WHERE id = ?";
@@ -21,8 +25,6 @@ public class JdbcUserDao implements UserDao {
     private static String ADD_USER = "INSERT INTO users (login, password, role) VALUES (?, ?, ?)";
     private static String MESSAGE_KEY_SUCCESS = "success";
     private static String MESSAGE_KEY_ERROR = "error";
-    private static String REGISTRATION_SUCCESS = "Registration success!";
-    private static String REGISTRATION_ERROR = "A user with this login already exists";
     ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public static UserDao getInstance() {
@@ -47,16 +49,16 @@ public class JdbcUserDao implements UserDao {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             user = usersExtractor.extractData(resultSet).stream().findAny();
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found user by id in the database");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in findUser", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in findUser", ex);
                 }
             }
             if (conn != null) {
@@ -78,16 +80,15 @@ public class JdbcUserDao implements UserDao {
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
             user = usersExtractor.extractData(resultSet).stream().findAny();
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found user by login and pass in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in findUserByLoginAndPass", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -123,16 +124,15 @@ public class JdbcUserDao implements UserDao {
             } else {
                 messages.put(MESSAGE_KEY_ERROR, rb.getString("REGISTRATION_ERROR"));
             }
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Add user");
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in addUser", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -152,16 +152,15 @@ public class JdbcUserDao implements UserDao {
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
             statement.executeUpdate();
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Delete user");
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in deleteUser", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
@@ -180,16 +179,15 @@ public class JdbcUserDao implements UserDao {
             statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(FIND_ALL_USERS);
             users = usersExtractor.extractData(resultSet);
-            // LOGGER.log(Level.INFO, "Found {0} phones in the database");
+            log.log(Level.INFO, "Found all users in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            // LOGGER.log(Level.SEVERE, "Error in findProducts", ex);
+            log.log(Level.ERROR, "Error in findAllUsers", ex);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    log.log(Level.ERROR, "Error in closing statement", ex);
                 }
             }
             if (conn != null) {
