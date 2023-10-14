@@ -1,6 +1,5 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
-import com.bsuir.aleksandrov.phoneshop.model.dao.OrderDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.OrderItemDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItem;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItemsExtractor;
@@ -13,13 +12,34 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
+/**
+ * Using jdbc to work with order items
+ * @author nekit
+ * @version 1.0
+ */
 public class JdbcOrderItemDao implements OrderItemDao {
+    /**
+     * Instance of logger
+     */
     private static final Logger log = Logger.getLogger(OrderItemDao.class);
+    /**
+     * SQL query for find phones from database by order
+     */
     private static final String GET_ORDER_ITEMS = "SELECT * FROM order2item WHERE orderId = ?";
+    /**
+     * Instance of connection pool
+     */
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
+    /**
+     * Instance of OrderItemsExtractor
+     */
     private OrderItemsExtractor orderItemsExtractor = new OrderItemsExtractor();
 
+    /**
+     * Get orderItems from database by id of order
+     * @param key key of order
+     * @return List of OrderItems
+     */
     @Override
     public List<OrderItem> getOrderItems(final Long key) {
         List<OrderItem> orderItems = null;

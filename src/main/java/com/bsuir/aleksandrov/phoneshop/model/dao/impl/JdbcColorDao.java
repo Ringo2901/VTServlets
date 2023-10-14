@@ -14,15 +14,36 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Using jdbc to work with colors
+ * @author nekit
+ * @version 1.0
+ */
 public class JdbcColorDao implements ColorDao {
+    /**
+     * Field of logger
+     */
     private static final Logger log = Logger.getLogger(ColorDao.class);
+    /**
+     * Extractor of colors
+     */
     private final ColorsExtractor colorExtractor = new ColorsExtractor();
+    /**
+     * Instance of connection pool
+     */
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
+    /**
+     * SQL query for find colors
+     */
     private static final String GET_QUERY = "select COLORS.ID, COLORS.CODE " +
             "from (select * from PHONE2COLOR where PHONEID = ?) p2c " +
             "left join COLORS on p2c.COLORID = COLORS.ID order by COLORS.ID";
 
-
+    /**
+     * Get colors from database
+     * @param id - id of phone
+     * @return List of colors
+     */
     @Override
     public List<Color> getColors(Long id) {
         List<Color> colors = new ArrayList<>();

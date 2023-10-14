@@ -1,6 +1,5 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
-import com.bsuir.aleksandrov.phoneshop.model.dao.StockDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.UserDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.UsersExtractor;
@@ -9,24 +8,68 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import java.net.http.HttpRequest;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Using jdbc to work with users
+ * @author nekit
+ * @version 1.0
+ */
 public class JdbcUserDao implements UserDao {
+    /**
+     * Instance of logger
+     */
     private static final Logger log = Logger.getLogger(UserDao.class);
+    /**
+     * Instance of UserDao
+     */
     private static volatile UserDao instance;
+    /**
+     * UsersExtractor
+     */
     private UsersExtractor usersExtractor = new UsersExtractor();
+    /**
+     * SQL query to find user by id
+     */
     private static String FIND_USER = "SELECT * FROM users WHERE id = ?";
+    /**
+     * SQL query to find user by login
+     */
     private static String FIND_USER_WITH_LOGIN = "SELECT * FROM users WHERE login = ?";
+    /**
+     * SQL query to find users by login and password
+     */
     private static String FIND_USER_WITH_LOGIN_AND_PASSWORD = "SELECT * FROM users WHERE login = ? AND password = ?";
+    /**
+     * SQL query to find all users with role User
+     */
     private static String FIND_ALL_USERS = "SELECT * FROM users WHERE role = 'User'";
+    /**
+     * SQL query to delete user with login and password
+     */
     private static String DELETE_USER = "DELETE FROM users WHERE login = ? AND password = ?";
+    /**
+     * SQL query to insert new user
+     */
     private static String ADD_USER = "INSERT INTO users (login, password, role) VALUES (?, ?, ?)";
+    /**
+     * Key to map when success
+     */
     private static String MESSAGE_KEY_SUCCESS = "success";
+    /**
+     * Key to map when error
+     */
     private static String MESSAGE_KEY_ERROR = "error";
-    ConnectionPool connectionPool = ConnectionPool.getInstance();
+    /**
+     * Instance of connection pool
+     */
+    private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
+    /**
+     * Realisation of Singleton pattern
+     * @return instance of UserDao
+     */
     public static UserDao getInstance() {
         if (instance == null) {
             synchronized (UserDao.class) {
@@ -38,6 +81,11 @@ public class JdbcUserDao implements UserDao {
         return instance;
     }
 
+    /**
+     * Find user by id
+     * @param id id of user
+     * @return user
+     */
     @Override
     public Optional<User> findUser(Long id) {
         Optional<User> user = Optional.empty();
@@ -68,6 +116,12 @@ public class JdbcUserDao implements UserDao {
         return user;
     }
 
+    /**
+     * Find user by login and password
+     * @param login login of user
+     * @param password password of user
+     * @return user
+     */
     @Override
     public Optional<User> findUserByLoginAndPass(String login, String password) {
         Optional<User> user = Optional.empty();
@@ -98,13 +152,19 @@ public class JdbcUserDao implements UserDao {
         return user;
     }
 
+    /**
+     * Add new user
+     * @param user user to add
+     * @param request request of adding
+     * @return Map with errors or success messages
+     */
     @Override
     public Map<String, String> addUser(User user, HttpServletRequest request) {
         Connection conn = null;
         PreparedStatement statement = null;
         Map<String, String> messages = new HashMap<>();
         Object lang = request.getSession().getAttribute("lang");
-        if (lang == null){
+        if (lang == null) {
             lang = "en";
         }
         Locale locale = new Locale(lang.toString());
@@ -142,6 +202,10 @@ public class JdbcUserDao implements UserDao {
         return messages;
     }
 
+    /**
+     * Delete user from database
+     * @param user user to delete
+     */
     @Override
     public void deleteUser(User user) {
         Connection conn = null;
@@ -169,6 +233,10 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
+    /**
+     * Find all users in database
+     * @return List of users
+     */
     @Override
     public List<User> findAllUsers() {
         List<User> users = new ArrayList<>();

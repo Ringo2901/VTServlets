@@ -20,13 +20,33 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+/**
+ * Using to manage orders
+ * @author nekit
+ * @version 1.0
+ */
 public class OrderServiceImpl implements OrderService {
+    /**
+     * Instance of cart service
+     */
     private CartService cartService = HttpSessionCartService.getInstance();
+    /**
+     * Instance of stock dao
+     */
     private StockDao stockDao = JdbcStockDao.getInstance();
+    /**
+     * Instance of order dao
+     */
     private OrderDao orderDao = JdbcOrderDao.getInstance();
+    /**
+     * Instance of OrderService
+     */
     private static volatile OrderService instance;
 
+    /**
+     * Realisation of Singleton pattern
+     * @return instance of orderService
+     */
     public static OrderService getInstance() {
         if (instance == null) {
             synchronized (OrderService.class) {
@@ -38,6 +58,11 @@ public class OrderServiceImpl implements OrderService {
         return instance;
     }
 
+    /**
+     * Create empty order and fill order items
+     * @param cart cart with items
+     * @return order
+     */
     public Order createOrder(Cart cart) {
         Order order = new Order();
         BigDecimal deliveryPrice = BigDecimal.valueOf(10);
@@ -48,6 +73,12 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
+    /**
+     * Place order in database
+     * @param order order to place
+     * @param request request with cart
+     * @throws OutOfStockException throws when some products out of stock during placing
+     */
     @Override
     public void placeOrder(final Order order, HttpServletRequest request) throws OutOfStockException {
         checkStock(request, order);
@@ -62,11 +93,21 @@ public class OrderServiceImpl implements OrderService {
         cartService.clear(request);
     }
 
+    /**
+     * Changing order status in database
+     * @param id id of order
+     * @param status new status of order
+     */
     @Override
     public void changeOrderStatus(Long id, OrderStatus status) {
         orderDao.changeStatus(id, status);
     }
 
+    /**
+     * Fill order items from cart to order
+     * @param order order to fill
+     * @param cart cart with items
+     */
     private void fillOrderItems(Order order, Cart cart) {
         List<OrderItem> orderItems = cart.getItems().stream()
                 .map(cartItem -> {
@@ -81,6 +122,12 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(orderItems);
     }
 
+    /**
+     * Check stock of items in order
+     * @param request request with cart to remove in case of out of stock
+     * @param order order to check
+     * @throws OutOfStockException throws when some products out of stock during placing
+     */
     private void checkStock(HttpServletRequest request, final Order order) throws OutOfStockException {
         List<OrderItem> outOfStockItems = order.getOrderItems().stream()
                 .filter(item -> stockDao.availableStock(item.getPhone().getId()) - item.getQuantity() < 0)

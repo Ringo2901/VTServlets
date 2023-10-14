@@ -13,25 +13,64 @@ import org.apache.log4j.Logger;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Using jdbc to work with order
+ * @author nekit
+ * @version 1.0
+ */
 public class JdbcOrderDao implements OrderDao {
+    /**
+     * Field of logger
+     */
     private static final Logger log = Logger.getLogger(OrderDao.class);
+    /**
+     * SQL query for find order with id
+     */
     private static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE id = ?";
+    /**
+     * SQL query for find order with secureID
+     */
     private static final String GET_ORDER_BY_SECURE_ID = "SELECT * FROM orders WHERE secureID = ?";
+    /**
+     * SQL query for save order in database
+     */
     private static final String SAVE_ORDER = "INSERT INTO orders (secureID, subtotal, deliveryPrice, " +
             "totalPrice, firstName, lastName, deliveryAddress, contactPhoneNo, additionalInformation, date, time, login) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    /**
+     * SQL query for change status of order
+     */
     private static final String CHANGE_STATUS = "UPDATE orders SET status = ? WHERE id = ?";
+    /**
+     * SQL query for adding order items in database
+     */
     private static final String ADD_ORDER2ITEM = "INSERT INTO order2item (orderId, phoneId, quantity) " +
             "VALUES (?, ?, ?)";
+    /**
+     * SQL query for get all orders from database
+     */
     private static final String GET_ALL_ORDERS = "SELECT * FROM orders";
+    /**
+     * SQL query for get all orders from database by login
+     */
     private static final String GET_ALL_ORDERS_BY_LOGIN = "SELECT * FROM orders WHERE login = ?";
-
+    /**
+     * Field of order extractor
+     */
     private OrdersExtractor ordersExtractor = new OrdersExtractor();
+    /**
+     * Instance of connection pool
+     */
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
-
+    /**
+     * Instance of OrderDao
+     */
     private static volatile OrderDao instance;
 
+    /**
+     * Realisation of Singleton pattern
+     * @return instance of OrderDao
+     */
     public static OrderDao getInstance() {
         if (instance == null) {
             synchronized (OrderDao.class) {
@@ -43,6 +82,11 @@ public class JdbcOrderDao implements OrderDao {
         return instance;
     }
 
+    /**
+     * Get order by id
+     * @param key - id of order
+     * @return order
+     */
     @Override
     public Optional<Order> getById(final Long key) {
         Optional<Order> order = null;
@@ -73,6 +117,11 @@ public class JdbcOrderDao implements OrderDao {
         return order;
     }
 
+    /**
+     * Get order by secureId
+     * @param secureID - secureId of order
+     * @return order
+     */
     @Override
     public Optional<Order> getBySecureID(String secureID) {
         Optional<Order> order = null;
@@ -103,6 +152,10 @@ public class JdbcOrderDao implements OrderDao {
         return order;
     }
 
+    /**
+     * Find orders in database
+     * @return List of orders
+     */
     @Override
     public List<Order> findOrders() {
         List<Order> orders = null;
@@ -132,6 +185,11 @@ public class JdbcOrderDao implements OrderDao {
         return orders;
     }
 
+    /**
+     * Find orders in database by login
+     * @param login login to find
+     * @return List of orders
+     */
     @Override
     public List<Order> findOrdersByLogin(String login) {
         List<Order> orders = null;
@@ -162,6 +220,11 @@ public class JdbcOrderDao implements OrderDao {
         return orders;
     }
 
+    /**
+     * Change status of order
+     * @param id id of order
+     * @param status new status of order
+     */
     @Override
     public void changeStatus(Long id, OrderStatus status) {
         PreparedStatement statement = null;
@@ -190,6 +253,10 @@ public class JdbcOrderDao implements OrderDao {
         }
     }
 
+    /**
+     * Save order in database
+     * @param order - order to save
+     */
     @Override
     public void save(final Order order) {
         Connection conn = null;
@@ -243,6 +310,14 @@ public class JdbcOrderDao implements OrderDao {
         }
     }
 
+    /**
+     * Add order item in database
+     * @param conn connection to database
+     * @param orderId id of order
+     * @param phoneId id of phone to add
+     * @param quantity quantity of phone to add
+     * @throws SQLException exception throws when there were some problems during sql operation
+     */
     private void addOrderItem(Connection conn, Long orderId, Long phoneId, int quantity) throws SQLException {
         try (PreparedStatement statement = conn.prepareStatement(ADD_ORDER2ITEM)) {
             statement.setLong(1, orderId);

@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 
 public class AdminOrderManagePageServlet extends HttpServlet {
     private static final String ADMIN_ORDERS_PAGE_JSP = "/WEB-INF/pages/adminOrderManagePage.jsp";
-    private static final String ORDER_NOT_FOUND_PAGE_JSP = "/WEB-INF/pages/OrderNotFoundPage.jsp";
+    private static final String ORDER_NOT_FOUND_PAGE_JSP = "/WEB-INF/pages/orderNotFoundPage.jsp";
     private static final String ORDER_ATTRIBUTE = "order";
     private static final String SUCCESS_ATTRIBUTE = "successMessage";
     private static final String ERROR_ATTRIBUTE = "errorMessage";

@@ -13,14 +13,41 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Using jdbc to work with stock
+ * @author nekit
+ * @version 1.0
+ */
 public class JdbcStockDao implements StockDao {
+    /**
+     * Instance of logger
+     */
     private static final Logger log = Logger.getLogger(StockDao.class);
+    /**
+     * Stock extractor
+     */
     private StocksExtractor stocksExtractor = new StocksExtractor();
+    /**
+     * Instance of connection pool
+     */
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
+    /**
+     * Instance of StockDao
+     */
     private static volatile StockDao instance;
+    /**
+     * SQL query to find stock by id
+     */
     private static final String GET_STOCK_BY_ID = "SELECT * FROM stocks WHERE phoneId = ?";
+    /**
+     * SQL query to update reserved stock
+     */
     private static final String UPDATE_STOCK = "UPDATE stocks SET reserved = ? WHERE phoneId = ?";
 
+    /**
+     * Realisation of Singleton pattern
+     * @return instance of StockDao
+     */
     public static StockDao getInstance() {
         if (instance == null) {
             synchronized (StockDao.class) {
@@ -32,6 +59,11 @@ public class JdbcStockDao implements StockDao {
         return instance;
     }
 
+    /**
+     * Find available stock in database
+     * @param phoneId id of phone
+     * @return available stock
+     */
     @Override
     public Integer availableStock(Long phoneId) {
         Stock stock = getStock(phoneId);
@@ -42,6 +74,11 @@ public class JdbcStockDao implements StockDao {
         }
     }
 
+    /**
+     * Update reserve number of phones in database
+     * @param phoneId - phone to update
+     * @param quantity - quantity to add in reserve field
+     */
     @Override
     public void reserve(Long phoneId, int quantity) {
         Stock stock = getStock(phoneId);
@@ -73,6 +110,11 @@ public class JdbcStockDao implements StockDao {
         }
     }
 
+    /**
+     * Get stock of phone in database
+     * @param phoneId id of phone
+     * @return stock of phone
+     */
     private Stock getStock(Long phoneId) {
         Stock stock = null;
         Connection conn = null;

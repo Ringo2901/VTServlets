@@ -7,16 +7,45 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
-
+/**
+ * Connection pool to work with database
+ * @author nekit
+ * @version 1.0
+ */
 public class ConnectionPool {
+    /**
+     * Instance of connection pool
+     */
     private static ConnectionPool instance = null;
+    /**
+     * url of database
+     */
     private final String url;
+    /**
+     * user of database
+     */
     private final String user;
+    /**
+     * password to database
+     */
     private final String password;
+    /**
+     * max connection to database
+     */
     private final int maxConnections = 10;
+    /**
+     * List of connections
+     */
     private final List<Connection> connectionPool;
+    /**
+     * List of connection in use
+     */
     private final List<Connection> usedConnections = new ArrayList<>();
 
+    /**
+     * Realisation of Singleton pattern
+     * @return instance of Connection pool
+     */
     public synchronized static ConnectionPool getInstance() {
         if (instance == null) {
             synchronized (ConnectionPool.class) {
@@ -28,6 +57,9 @@ public class ConnectionPool {
         return instance;
     }
 
+    /**
+     * Constructor of Connection pool that get url, user and password from properties file
+     */
     public ConnectionPool() {
         ResourceBundle bundle = ResourceBundle.getBundle("database");
         url = bundle.getString("db.url") + bundle.getString("db.name");
@@ -36,6 +68,11 @@ public class ConnectionPool {
         this.connectionPool = new ArrayList<>(maxConnections);
     }
 
+    /**
+     * Get connection to database
+     * @return instance of connection
+     * @throws SQLException throws when fail to connect to database
+     */
     public synchronized Connection getConnection() throws SQLException {
         if (connectionPool.isEmpty()) {
             if (usedConnections.size() < maxConnections) {
@@ -52,11 +89,20 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * Remove connection from used connections
+     * @param connection connection to release
+     */
     public synchronized void releaseConnection(Connection connection) {
         usedConnections.remove(connection);
         connectionPool.add(connection);
     }
 
+    /**
+     * Create connection
+     * @return connection
+     * @throws SQLException when connection fail
+     */
     private Connection createConnection() throws SQLException {
         Properties properties = new Properties();
         properties.setProperty("user", user);
@@ -64,6 +110,10 @@ public class ConnectionPool {
         return DriverManager.getConnection(url, properties);
     }
 
+    /**
+     * close all connections
+     * @throws SQLException throws when fail to close
+     */
     public void closeAllConnections() throws SQLException {
         for (Connection connection : connectionPool) {
             connection.close();

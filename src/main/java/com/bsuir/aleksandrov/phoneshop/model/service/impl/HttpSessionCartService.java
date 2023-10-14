@@ -14,13 +14,37 @@ import jakarta.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-
+/**
+ * Service to work with cart
+ * @author nekit
+ * @version 1.0
+ */
 public class HttpSessionCartService implements CartService {
+    /**
+     * Attribute of cart in session
+     */
     private static final String CART_SESSION_ATTRIBUTE = HttpSessionCartService.class.getName() + ".cart";
+    /**
+     * Attribute of cart in request attribute
+     */
     private static final String CART_ATTRIBUTE = "cart";
+    /**
+     * Instance of HttpSessionCartService
+     */
     private static volatile HttpSessionCartService instance;
+    /**
+     * Instance of PhoneDao
+     */
     private PhoneDao phoneDao;
+    /**
+     * Instance of StockDao
+     */
     private StockDao stockDao;
+
+    /**
+     * Realisation of Singleton pattern
+     * @return instance of HttpSessionCartServiece
+     */
 
     public static HttpSessionCartService getInstance() {
         if (instance == null) {
@@ -33,11 +57,19 @@ public class HttpSessionCartService implements CartService {
         return instance;
     }
 
+    /**
+     * Constructor of HttpSessionCartService
+     */
     private HttpSessionCartService() {
         phoneDao = JdbcPhoneDao.getInstance();
         stockDao = JdbcStockDao.getInstance();
     }
 
+    /**
+     * Get cart from session
+     * @param request request of getting cart
+     * @return cart from session
+     */
     @Override
     public Cart getCart(HttpServletRequest request) {
         HttpSession currentSession = request.getSession();
@@ -54,6 +86,14 @@ public class HttpSessionCartService implements CartService {
         }
     }
 
+    /**
+     * Add Phone to cart
+     * @param cart cart to adding
+     * @param productId productId of phone to add
+     * @param quantity quantity of phone to add
+     * @param request request of adding to cart
+     * @throws OutOfStockException throws when phone outOfStock
+     */
     @Override
     public void add(Cart cart, Long productId, int quantity, HttpServletRequest request) throws OutOfStockException {
         HttpSession currentSession = request.getSession();
@@ -77,6 +117,12 @@ public class HttpSessionCartService implements CartService {
         }
     }
 
+    /**
+     * Calculate quantity of phone with cart
+     * @param cart cart with phones to recalculate
+     * @param phone phone to recalculate
+     * @return available quantity of phone minus quantity of phone in cart
+     */
     private int countingQuantityIncludingCart(Cart cart, Phone phone) {
         int result = stockDao.availableStock(phone.getId());
         Integer quantityInCart = cart.getItems().stream()
@@ -88,6 +134,14 @@ public class HttpSessionCartService implements CartService {
         return result;
     }
 
+    /**
+     * Update quantity of phone in cart
+     * @param cart cart to update
+     * @param productId id of phone to update
+     * @param quantity quantity of phone to update
+     * @param request request with cart
+     * @throws OutOfStockException throws when phone quantity out of stock during updating
+     */
     @Override
     public void update(Cart cart, Long productId, int quantity, HttpServletRequest request) throws OutOfStockException {
         HttpSession currentSession = request.getSession();
@@ -106,6 +160,12 @@ public class HttpSessionCartService implements CartService {
         }
     }
 
+    /**
+     * Delete item from cart
+     * @param cart cart to delete
+     * @param productId id of phone to delete
+     * @param request request with cart
+     */
     @Override
     public void delete(Cart cart, Long productId, HttpServletRequest request) {
         HttpSession currentSession = request.getSession();
@@ -115,6 +175,10 @@ public class HttpSessionCartService implements CartService {
         }
     }
 
+    /**
+     * Recalculate cart
+     * @param cartToRecalculate cat to recalculate
+     */
     @Override
     public void reCalculateCart(Cart cartToRecalculate) {
         BigDecimal totalCost = BigDecimal.ZERO;
@@ -132,12 +196,22 @@ public class HttpSessionCartService implements CartService {
         cartToRecalculate.setTotalCost(totalCost);
     }
 
+    /**
+     * Find cart item in cart
+     * @param cart cart in witch we find
+     * @param product product to find
+     * @return cartItem
+     */
     private Optional<CartItem> getCartItemMatch(Cart cart, Phone product) {
         return cart.getItems().stream().
                 filter(currProduct -> currProduct.getPhone().getId().equals(product.getId())).
                 findAny();
     }
 
+    /**
+     * Clear cart in request
+     * @param request request with cart
+     */
     @Override
     public void clear(HttpServletRequest request) {
         Cart cart = getCart(request);
@@ -145,6 +219,11 @@ public class HttpSessionCartService implements CartService {
         reCalculateCart(cart);
     }
 
+    /**
+     * Remove item from cart
+     * @param request request with cart
+     * @param phoneId id of phone to remove
+     */
     @Override
     public void remove(HttpServletRequest request, Long phoneId) {
         Cart cart = getCart(request);

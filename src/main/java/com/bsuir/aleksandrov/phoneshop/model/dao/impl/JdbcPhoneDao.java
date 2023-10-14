@@ -14,21 +14,53 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Using jdbc to work with phones
+ * @author nekit
+ * @version 1.0
+ */
 public class JdbcPhoneDao implements PhoneDao {
+    /**
+     * Instance of logger
+     */
     private static final Logger log = Logger.getLogger(PhoneDao.class);
+    /**
+     * Instance of phoneExtractor
+     */
     private PhonesExtractor phonesExtractor = new PhonesExtractor();
+    /**
+     * Instance of PhoneDao
+     */
     private static volatile PhoneDao instance;
+    /**
+     * Instance of ConnectionPool
+     */
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
+    /**
+     * SQL query to find phones by id
+     */
     private static final String GET_QUERY = "SELECT * FROM phones WHERE id = ?";
+    /**
+     * SQL query to find all phones with available stock > 0, limit and offset
+     */
     private static final String SIMPLE_FIND_ALL_QUERY = "select ph.* " +
             "from (select PHONES.* from PHONES " +
             "left join STOCKS on PHONES.ID = STOCKS.PHONEID where STOCKS.STOCK - STOCKS.RESERVED > 0 and phones.price > 0 offset ? limit ?) ph";
+    /**
+     * SQL query to find all phones with available stock
+     */
     private static final String FIND_WITHOUT_OFFSET_AND_LIMIT = "SELECT ph.* " +
             "FROM (SELECT phones.* FROM phones " +
             "LEFT JOIN stocks ON phones.id = stocks.phoneId WHERE stocks.stock - stocks.reserved > 0 ";
+    /**
+     * SQL query to find number of phones
+     */
     private static final String NUMBER_OF_PHONES_QUERY = "SELECT count(*) FROM PHONES LEFT JOIN STOCKS ON PHONES.ID = STOCKS.PHONEID WHERE STOCKS.STOCK - STOCKS.RESERVED > 0 AND phones.price > 0";
 
+    /**
+     * Realisation of Singleton pattern
+     * @return instance of PhoneDao
+     */
     public static PhoneDao getInstance() {
         if (instance == null) {
             synchronized (PhoneDao.class) {
@@ -40,6 +72,11 @@ public class JdbcPhoneDao implements PhoneDao {
         return instance;
     }
 
+    /**
+     * Get phone by id from database
+     * @param key id of phone
+     * @return phone
+     */
     @Override
     public Optional<Phone> get(Long key) {
         Optional<Phone> phone = null;
@@ -69,6 +106,15 @@ public class JdbcPhoneDao implements PhoneDao {
         return phone;
     }
 
+    /**
+     * Find all phones from database
+     * @param offset - offset of found phones
+     * @param limit - limit of found phones
+     * @param sortField - field to sort (model, brand, price, display size)
+     * @param sortOrder - sort order (asc or desc)
+     * @param query - query for find
+     * @return list of phones
+     */
     @Override
     public List<Phone> findAll(int offset, int limit, SortField sortField, SortOrder sortOrder, String query) {
         List<Phone> phones = new ArrayList<>();
@@ -100,6 +146,11 @@ public class JdbcPhoneDao implements PhoneDao {
         return phones;
     }
 
+    /**
+     * Frind number of phones by query from database
+     * @param query - query for find
+     * @return
+     */
     @Override
     public Long numberByQuery(String query) {
         String sql;
@@ -139,6 +190,13 @@ public class JdbcPhoneDao implements PhoneDao {
         return 0L;
     }
 
+    /**
+     * Make sql query with sorting and finding
+     * @param sortField - field to sort
+     * @param sortOrder - order to sort
+     * @param query - query to find
+     * @return sql query
+     */
     private String makeFindAllSQL(SortField sortField, SortOrder sortOrder, String query) {
         if (sortField != null || query != null && !query.equals("")) {
             StringBuilder sql = new StringBuilder(FIND_WITHOUT_OFFSET_AND_LIMIT);
