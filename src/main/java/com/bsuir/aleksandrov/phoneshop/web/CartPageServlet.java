@@ -30,7 +30,7 @@ public class CartPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getSession().setAttribute("inputErrors", null);
-        request.setAttribute(CART_ATTRIBUTE, cartService.getCart(request));
+        request.setAttribute(CART_ATTRIBUTE, cartService.getCart(request.getSession()));
         request.getRequestDispatcher(CART_JSP).forward(request, response);
     }
 
@@ -56,7 +56,7 @@ public class CartPageServlet extends HttpServlet {
         int phoneId = Integer.parseInt(request.getParameter("id"));
         try {
             int quantity = parseQuantity(request.getParameter("quantity"), request);
-            cartService.add(cartService.getCart(request), (long) phoneId, quantity, request);
+            cartService.add(cartService.getCart(request.getSession()), (long) phoneId, quantity, request.getSession());
         } catch (OutOfStockException e) {
             inputErrors.put((long) phoneId, rb.getString("NOT_ENOUGH_ERROR") + e.getAvailableStock());
         } catch (ParseException e) {
@@ -92,10 +92,10 @@ public class CartPageServlet extends HttpServlet {
         for (int i = 0; i < productIds.length; i++) {
             try {
                 cartService.update(
-                        cartService.getCart(request),
+                        cartService.getCart(request.getSession()),
                         Long.parseLong(productIds[i]),
                         parseQuantity(quantities[i], request),
-                        request);
+                        request.getSession());
             } catch (OutOfStockException e) {
                 inputErrors.put(
                         Long.parseLong(productIds[i]),
@@ -116,7 +116,7 @@ public class CartPageServlet extends HttpServlet {
 
     private void deleteItem(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         int phoneId = Integer.parseInt(request.getParameter("id"));
-        cartService.delete(cartService.getCart(request), (long) phoneId, request);
+        cartService.delete(cartService.getCart(request.getSession()), (long) phoneId, request.getSession());
         response.sendRedirect(String.format("%s/cart?message=Item successfully deleted!", request.getContextPath()));
         doGet(request, response);
     }

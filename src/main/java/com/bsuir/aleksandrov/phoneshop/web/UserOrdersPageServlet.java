@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.net.http.HttpRequest;
 
 public class UserOrdersPageServlet extends HttpServlet {
     private static final String ADMIN_ORDERS_PAGE_JSP = "/WEB-INF/pages/userOrders.jsp";

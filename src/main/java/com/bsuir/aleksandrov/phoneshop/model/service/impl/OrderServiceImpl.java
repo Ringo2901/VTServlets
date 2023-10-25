@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
                 .forEach(item -> stockDao.reserve(item.getPhone().getId(), item.getQuantity()));
         order.setSecureID(UUID.randomUUID().toString());
         orderDao.save(order);
-        cartService.clear(request);
+        cartService.clear(request.getSession());
     }
 
     /**
@@ -136,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
             StringBuilder outOfStockModels = new StringBuilder();
             outOfStockItems.stream().forEach(item -> {
                 outOfStockModels.append(item.getPhone().getModel() + "; ");
-                cartService.remove(request, item.getPhone().getId());
+                cartService.remove(request.getSession(), item.getPhone().getId());
             });
             throw new OutOfStockException("Some of items out of stock (" + outOfStockModels + "). They deleted from cart.");
         }

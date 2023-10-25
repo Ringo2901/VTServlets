@@ -35,7 +35,7 @@ public class HttpSessionCartServiceTest {
 
     @Test
     public void testGetCart_NewCart() {
-        Cart cart = cartService.getCart(request);
+        Cart cart = cartService.getCart(request.getSession());
         assertNotNull(cart);
         assertEquals(BigDecimal.ZERO, cart.getTotalCost());
     }
@@ -43,9 +43,9 @@ public class HttpSessionCartServiceTest {
     @Test
     public void testDeleteCartItem() throws OutOfStockException {
         Cart cart = new Cart();
-        cartService.add(cart, 1L, 5, request);
+        cartService.add(cart, 1L, 5, request.getSession());
 
-        cartService.delete(cart, 1L, request);
+        cartService.delete(cart, 1L, request.getSession());
 
         assertEquals(0, cart.getTotalItems());
     }
@@ -53,9 +53,9 @@ public class HttpSessionCartServiceTest {
     @Test
     public void testClearCart() throws OutOfStockException {
         Cart cart = new Cart();
-        cartService.add(cart, 1L, 5, request);
+        cartService.add(cart, 1L, 5, request.getSession());
 
-        cartService.clear(request);
+        cartService.clear(request.getSession());
 
         assertEquals(0, cart.getTotalItems());
     }
@@ -63,9 +63,9 @@ public class HttpSessionCartServiceTest {
     @Test
     public void testRemoveCartItem() throws OutOfStockException {
         Cart cart = new Cart();
-        cartService.add(cart, 1L, 5, request);
+        cartService.add(cart, 1L, 5, request.getSession());
 
-        cartService.remove(request, 1L);
+        cartService.remove(request.getSession(), 1L);
 
         assertEquals(0, cart.getTotalItems());
     }

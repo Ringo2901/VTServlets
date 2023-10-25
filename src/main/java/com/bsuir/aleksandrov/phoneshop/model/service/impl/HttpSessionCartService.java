@@ -67,12 +67,11 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Get cart from session
-     * @param request request of getting cart
+     * @param currentSession session with cart
      * @return cart from session
      */
     @Override
-    public Cart getCart(HttpServletRequest request) {
-        HttpSession currentSession = request.getSession();
+    public Cart getCart(HttpSession currentSession) {
         synchronized (currentSession) {
             Cart cart = (Cart) currentSession.getAttribute(CART_SESSION_ATTRIBUTE);
             if (cart == null) {
@@ -91,12 +90,11 @@ public class HttpSessionCartService implements CartService {
      * @param cart cart to adding
      * @param productId productId of phone to add
      * @param quantity quantity of phone to add
-     * @param request request of adding to cart
+     * @param currentSession session with cart
      * @throws OutOfStockException throws when phone outOfStock
      */
     @Override
-    public void add(Cart cart, Long productId, int quantity, HttpServletRequest request) throws OutOfStockException {
-        HttpSession currentSession = request.getSession();
+    public void add(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException {
         Optional<CartItem> productMatch;
         synchronized (currentSession) {
             Phone phone = phoneDao.get(productId).orElse(null);
@@ -139,12 +137,11 @@ public class HttpSessionCartService implements CartService {
      * @param cart cart to update
      * @param productId id of phone to update
      * @param quantity quantity of phone to update
-     * @param request request with cart
+     * @param currentSession session with cart
      * @throws OutOfStockException throws when phone quantity out of stock during updating
      */
     @Override
-    public void update(Cart cart, Long productId, int quantity, HttpServletRequest request) throws OutOfStockException {
-        HttpSession currentSession = request.getSession();
+    public void update(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException {
         synchronized (currentSession) {
             Phone phone = phoneDao.get(productId).orElse(null);
             if (phone != null) {
@@ -164,11 +161,10 @@ public class HttpSessionCartService implements CartService {
      * Delete item from cart
      * @param cart cart to delete
      * @param productId id of phone to delete
-     * @param request request with cart
+     * @param currentSession session with cart
      */
     @Override
-    public void delete(Cart cart, Long productId, HttpServletRequest request) {
-        HttpSession currentSession = request.getSession();
+    public void delete(Cart cart, Long productId, HttpSession currentSession) {
         synchronized (currentSession) {
             cart.getItems().removeIf(item -> productId.equals(item.getPhone().getId()));
             reCalculateCart(cart);
@@ -210,23 +206,23 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Clear cart in request
-     * @param request request with cart
+     * @param currentSession session with cart
      */
     @Override
-    public void clear(HttpServletRequest request) {
-        Cart cart = getCart(request);
+    public void clear(HttpSession currentSession) {
+        Cart cart = getCart(currentSession);
         cart.getItems().clear();
         reCalculateCart(cart);
     }
 
     /**
      * Remove item from cart
-     * @param request request with cart
+     * @param currentSession session with cart
      * @param phoneId id of phone to remove
      */
     @Override
-    public void remove(HttpServletRequest request, Long phoneId) {
-        Cart cart = getCart(request);
+    public void remove(HttpSession currentSession, Long phoneId) {
+        Cart cart = getCart(currentSession);
         cart.getItems().removeIf(item -> phoneId.equals(item.getPhone().getId()));
         reCalculateCart(cart);
     }

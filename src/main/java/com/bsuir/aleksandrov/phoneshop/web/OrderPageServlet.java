@@ -39,7 +39,7 @@ public class OrderPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute(ODER_ATTRIBUTE, orderService.createOrder(cartService.getCart(request)));
+        request.setAttribute(ODER_ATTRIBUTE, orderService.createOrder(cartService.getCart(request.getSession())));
         request.getRequestDispatcher(ORDER_JSP).forward(request, response);
     }
 
@@ -51,7 +51,7 @@ public class OrderPageServlet extends HttpServlet {
             try {
                 orderService.placeOrder(order, request);
             } catch (OutOfStockException exception) {
-                request.setAttribute("order", orderService.createOrder(cartService.getCart(request)));
+                request.setAttribute("order", orderService.createOrder(cartService.getCart(request.getSession())));
                 errorsMap.put(0, exception.getMessage());
                 request.setAttribute("errorsMap", errorsMap);
                 doGet(request, response);
@@ -61,13 +61,13 @@ public class OrderPageServlet extends HttpServlet {
             }
         } else {
             request.setAttribute("errorsMap", errorsMap);
-            request.setAttribute("order", orderService.createOrder(cartService.getCart(request)));
+            request.setAttribute("order", orderService.createOrder(cartService.getCart(request.getSession())));
             doGet(request, response);
         }
     }
 
     private Order fillClientData(HttpServletRequest request, Map<Integer, String> errorsMap) {
-        Order order = orderService.createOrder(cartService.getCart(request));
+        Order order = orderService.createOrder(cartService.getCart(request.getSession()));
         String field = request.getParameter("firstName");
         Object lang = request.getSession().getAttribute("lang");
         if (lang == null){
