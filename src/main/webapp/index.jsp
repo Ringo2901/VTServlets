@@ -1,2 +1,2 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<% response.sendRedirect("products"); %>
+<% response.sendRedirect("/?Product_List"); %>

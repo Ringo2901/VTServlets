@@ -21,7 +21,8 @@
           <div class="panel-body">${messages.get('error')}</div>
         </div>
     </c:if>
-    <form action="/user/registration" method="post">
+    <form action="/" method="post">
+      <input type="hidden" name="command" value="registration">
       <div class="form-group">
         <label for="login"><fmt:message key="button_login" />:</label>
         <input type="text" class="form-control" id="login" name="login" required>

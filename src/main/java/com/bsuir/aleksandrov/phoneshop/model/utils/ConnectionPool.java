@@ -111,7 +111,7 @@ public class ConnectionPool {
     }
 
     /**
-     * close all connections
+     * Close all connections
      * @throws SQLException throws when fail to close
      */
     public void closeAllConnections() throws SQLException {

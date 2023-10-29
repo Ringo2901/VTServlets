@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-6">
                 <h1>
-                    <a style="font-family: 'Lobster'" class="text-light" href="<c:url value="/"/>">
+                    <a style="font-family: 'Lobster'" class="text-light" href="<c:url value="/?command=Product_List"/>">
                         Phonify
                     </a>
                     <br>
@@ -37,48 +37,49 @@
 
             </div>
             <div class="col-6">
-                <div class="float-right">
+                <div class="float-right" style="display: flex; flex-direction: column; align-items: end">
                     <c:choose>
                         <c:when test="${not empty sessionScope.login}">
-                            <form action="<c:url value="/cart"/>">
+                            <form action="<c:url value="/"/>" method="get">
+                                <input type="hidden" name="command" value="cart">
                                 <button class="btn btn-light"> <fmt:message key="master_cart" />:
                                     <span id="cartTotalCost"><c:out value="${cart.totalCost}"/></span>$
                                 </button>
                             </form>
                         </c:when>
                         <c:otherwise>
-                            <form action="<c:url value="/user/authorisation"/>">
+                            <form action="<c:url value="/"/>" method="get">
+                                <input type="hidden" name="command" value="authorisation">
                                 <button class="btn btn-light"> <fmt:message key="master_cart" />:</button>
                             </form>
                         </c:otherwise>
                     </c:choose>
                     <c:if test="${role.equals('Admin')}">
-                    <form action="<c:url value="/admin/orders"/>">
+                    <form action="<c:url value="/?command=admin_orders"/>">
                         <button class="btn btn-light"> <fmt:message key="master_orders_page" /> </button>
                     </form>
-                    <form action="<c:url value="/admin/users"/>">
+                    <form action="<c:url value="/?command=admin_users"/>">
                         <button class="btn btn-light"> <fmt:message key="master_users_page" /> </button>
                     </form>
                     </c:if>
                     <c:if test="${role.equals('User')}">
-                        <form action="<c:url value="/user/orders"/>">
+                        <form action="<c:url value="/?command=user_orders"/>">
                             <button class="btn btn-light"> <fmt:message key="master_orders_page" /> </button>
                         </form>
                     </c:if>
                 </div>
             </div>
             <div class="col-6">
-                <a href="<c:url value="/user/registration"/>" class="btn btn-primary"><fmt:message key="master_registration" /></a>
+                <a href="<c:url value="/?command=registration"/>" class="btn btn-primary"><fmt:message key="master_registration" /></a>
                 <c:choose>
                 <c:when test="${not empty sessionScope.login}">
-                    <a href="<c:url value="/user/logout"/>" class="btn btn-danger"><fmt:message key="master_logout" /></a>
+                    <a href="<c:url value="/?command=logout"/>" class="btn btn-danger"><fmt:message key="master_logout" /></a>
                 </c:when>
                 <c:otherwise>
-                    <a href="<c:url value="/user/authorisation"/>" class="btn btn-success"><fmt:message key="master_login" /></a>
+                    <a href="<c:url value="/?command=authorisation"/>" class="btn btn-success"><fmt:message key="master_login" /></a>
                 </c:otherwise>
                 </c:choose>
             </div>
-
         </div>
         <div align="right">
         <li style="color: white"><a class="btn btn-light" href="?sessionLocale=en"><fmt:message key="label.lang.en" /></a></li>

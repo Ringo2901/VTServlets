@@ -1,69 +1,56 @@
-package com.bsuir.aleksandrov.phoneshop.web;
+package com.bsuir.aleksandrov.phoneshop.web.commands.commandImpl;
 
-import com.bsuir.aleksandrov.phoneshop.model.dao.OrderDao;
-import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
-import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcOrderDao;
-import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcPhoneDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
-import com.bsuir.aleksandrov.phoneshop.model.entities.phone.Phone;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
 import com.bsuir.aleksandrov.phoneshop.model.service.CartService;
 import com.bsuir.aleksandrov.phoneshop.model.service.OrderService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.HttpSessionCartService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.OrderServiceImpl;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
+import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
+import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
+import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class OrderPageServlet extends HttpServlet {
-    private OrderService orderService;
-    private CartService cartService;
+public class OrderPageCommand implements ICommand {
     private static final String ODER_ATTRIBUTE = "order";
-    private static final String ORDER_JSP = "/WEB-INF/pages/orderPage.jsp";
+    private static final String SECURE_ID_ATTRIBUTE = "secureId";
+    private OrderService orderService = OrderServiceImpl.getInstance();
+    private CartService cartService = HttpSessionCartService.getInstance();
     private final String PHONE_VALIDATION_REG_EXP = "^(\\+375)(29|25|44|33)(\\d{3})(\\d{2})(\\d{2})$";
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        orderService = new OrderServiceImpl();
-        cartService = HttpSessionCartService.getInstance();
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute(ODER_ATTRIBUTE, orderService.createOrder(cartService.getCart(request.getSession())));
-        request.getRequestDispatcher(ORDER_JSP).forward(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Map<Integer, String> errorsMap = new HashMap<>();
-        Order order = fillClientData(request, errorsMap);
-        if (errorsMap.isEmpty()) {
-            try {
-                orderService.placeOrder(order, request);
-            } catch (OutOfStockException exception) {
-                request.setAttribute("order", orderService.createOrder(cartService.getCart(request.getSession())));
-                errorsMap.put(0, exception.getMessage());
-                request.setAttribute("errorsMap", errorsMap);
-                doGet(request, response);
-            }
-            if (errorsMap.isEmpty()) {
-                response.sendRedirect("/orderOverview/" + order.getSecureID());
-            }
+    public String execute(HttpServletRequest request) throws CommandException {
+        if (request.getMethod().equals("GET")) {
+            request.setAttribute(ODER_ATTRIBUTE, orderService.createOrder(cartService.getCart(request.getSession())));
+            return JspPageName.ORDER_JSP;
         } else {
-            request.setAttribute("errorsMap", errorsMap);
-            request.setAttribute("order", orderService.createOrder(cartService.getCart(request.getSession())));
-            doGet(request, response);
+            Map<Integer, String> errorsMap = new HashMap<>();
+            Order order = fillClientData(request, errorsMap);
+            if (errorsMap.isEmpty()) {
+                try {
+                    orderService.placeOrder(order, request);
+                } catch (OutOfStockException exception) {
+                    request.setAttribute("order", orderService.createOrder(cartService.getCart(request.getSession())));
+                    errorsMap.put(0, exception.getMessage());
+                    request.setAttribute("errorsMap", errorsMap);
+                    return "http://localhost:8080/?command=order";
+                }
+                if (errorsMap.isEmpty()) {
+                    request.setAttribute(SECURE_ID_ATTRIBUTE, order.getSecureID());
+                    return "http://localhost:8080/?command=order_overview";
+                }
+            } else {
+                request.setAttribute("errorsMap", errorsMap);
+                request.setAttribute("order", orderService.createOrder(cartService.getCart(request.getSession())));
+                return "http://localhost:8080/?command=order";
+            }
         }
+        return JspPageName.ORDER_JSP;
     }
 
     private Order fillClientData(HttpServletRequest request, Map<Integer, String> errorsMap) {

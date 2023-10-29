@@ -1,4 +1,4 @@
-package com.bsuir.aleksandrov.phoneshop.web;
+package com.bsuir.aleksandrov.phoneshop.web.commands.commandImpl;
 
 import com.bsuir.aleksandrov.phoneshop.model.dao.OrderDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcOrderDao;
@@ -6,9 +6,11 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
 import com.bsuir.aleksandrov.phoneshop.model.service.OrderService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.OrderServiceImpl;
+import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
+import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
+import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -16,35 +18,29 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class AdminOrderManagePageServlet extends HttpServlet {
-    private static final String ADMIN_ORDERS_PAGE_JSP = "/WEB-INF/pages/adminOrderManagePage.jsp";
-    private static final String ORDER_NOT_FOUND_PAGE_JSP = "/WEB-INF/pages/orderNotFoundPage.jsp";
+public class AdminOrderOverviewCommand implements ICommand {
     private static final String ORDER_ATTRIBUTE = "order";
     private static final String SUCCESS_ATTRIBUTE = "successMessage";
     private static final String ERROR_ATTRIBUTE = "errorMessage";
-    private OrderDao orderDao;
-    private OrderService orderService;
+    private OrderService orderService = OrderServiceImpl.getInstance();
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        orderDao = JdbcOrderDao.getInstance();
-        orderService = OrderServiceImpl.getInstance();
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Order order = orderDao.getById(Long.parseLong(request.getPathInfo().substring(1))).orElse(null);
-        if (order != null) {
-            request.setAttribute(ORDER_ATTRIBUTE, order);
-            request.getRequestDispatcher(ADMIN_ORDERS_PAGE_JSP).forward(request, response);
-        } else {
-            request.getRequestDispatcher(ORDER_NOT_FOUND_PAGE_JSP).forward(request, response);
+    public String execute(HttpServletRequest request) throws CommandException {
+        if (request.getMethod().equals("GET")){
+            Order order = orderService.getById(Long.parseLong(request.getPathInfo().substring(1))).orElse(null);
+            if (order != null) {
+                request.setAttribute(ORDER_ATTRIBUTE, order);
+                return JspPageName.ADMIN_ORDER_MANAGE_PAGE_JSP;
+            } else {
+                return JspPageName.ORDER_NOT_FOUND_PAGE_JSP;
+            }
+        } else{
+            change_status(request);
+            return request.getHeader("Referer");
         }
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void change_status (HttpServletRequest request){
         Long id = Long.parseLong(request.getPathInfo().substring(1));
         OrderStatus newStatus = OrderStatus.fromString(request.getParameter("status"));
         Object lang = request.getSession().getAttribute("lang");
@@ -59,7 +55,6 @@ public class AdminOrderManagePageServlet extends HttpServlet {
         } else {
             request.setAttribute(ERROR_ATTRIBUTE, rb.getString("error_message"));
         }
-        request.setAttribute(ORDER_ATTRIBUTE, orderDao.getById(id).orElse(null));
-        doGet(request, response);
+        request.setAttribute(ORDER_ATTRIBUTE, orderService.getById(id).orElse(null));
     }
 }

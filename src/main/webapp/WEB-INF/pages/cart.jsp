@@ -21,7 +21,7 @@
             </div>
         </c:when>
         <c:otherwise>
-            <c:if test="${not empty param.message}">
+            <c:if test="${not empty successMessage}">
                 <div class="container">
                     <div class="panel panel-success">
                         <div class="panel-heading"><fmt:message key="success_title" /></div>
@@ -39,17 +39,19 @@
             <c:if test="${cart.items.size() > 0}">
                     <c:choose>
                         <c:when test="${not empty sessionScope.login}">
-                            <form action="<c:url value="/order"/>" method="get">
+                            <form action="<c:url value="/"/>" method="get">
+                                <input type="hidden" name="command" value="order">
                         </c:when>
                         <c:otherwise>
-                            <form action="/user/authorisation" method="get">
+                            <form action="/" method="get">
+                                <input type="hidden" name="command" value="authorisation">
                         </c:otherwise>
                     </c:choose>
                     <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit"><fmt:message key="button_order" /></button>
                 </form>
                     <c:choose>
                         <c:when test="${not empty sessionScope.login}">
-                            <form action="/cart" method="post" id="updateForm">
+                            <form action="/?command=cart_update" method="post" id="updateForm">
                         </c:when>
                         <c:otherwise>
                             <form action="/user/authorisation" method="get">
@@ -111,7 +113,7 @@
 
         function deleteCartItem(phoneId) {
                 var form = document.createElement("form");
-                form.action = "/cart";
+                form.action = "/?command=cart_delete";
                 form.method = "post";
 
                 var inputId = document.createElement("input");

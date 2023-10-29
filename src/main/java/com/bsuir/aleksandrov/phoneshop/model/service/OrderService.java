@@ -5,6 +5,9 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Optional;
+
 /**
  * @author nekit
  * @version 1.0
@@ -31,4 +34,6 @@ public interface OrderService {
      * @param status new status of order
      */
     void changeOrderStatus(Long id, OrderStatus status);
+
+    Optional<Order> getById (Long id);
 }

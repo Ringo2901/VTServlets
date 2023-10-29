@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 /**
@@ -101,6 +102,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void changeOrderStatus(Long id, OrderStatus status) {
         orderDao.changeStatus(id, status);
+    }
+
+    @Override
+    public Optional<Order> getById(Long id) {
+        return orderDao.getById(id);
     }
 
     /**

@@ -54,7 +54,7 @@
             <button class="btn btn-outline-secondary" type="submit" name="page" ${page eq lastPage ? 'disabled="true"' : ''}
                     value="${lastPage}">>></button>
         </div>
-
+        <input type="hidden" name="command" value="Product_List">
         <c:if test="${not empty param.sort}"><input type="hidden" name="sort" value="${param.sort}"></c:if>
         <c:if test="${not empty param.order}"><input type="hidden" name="order" value="${param.order}"></c:if>
         <c:if test="${not empty param.query}"><input type="hidden" name="query" value="${param.query}"></c:if>

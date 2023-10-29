@@ -39,13 +39,14 @@
                     <p class="text">Price: $${phone.price}</p>
                     <c:choose>
                         <c:when test="${not empty sessionScope.login}">
-                            <form action="/cart" method="post">
+                            <form action="/" method="post">
+                                <input type="hidden" name="command" value="cart_add">
                         </c:when>
                         <c:otherwise>
-                            <form action="/user/authorisation" method="get">
+                            <form action="/" method="get">
+                                <input type="hidden" name="command" value="authorisation">
                         </c:otherwise>
                     </c:choose>
-                        <input type="hidden" name="addOperation" value="add">
                         <input type="hidden" name="id" value="${phone.id}">
                         <input type="number" name="quantity" id="quantity${phone.id}" min="1" required>
 

@@ -109,10 +109,12 @@
 
             <c:choose>
                 <c:when test="${not empty sessionScope.login}">
-                    <form method="post" action="${pageContext.servletContext.contextPath}/order">
+                    <form method="post" action="/">
+                        <input type="hidden" name="command" value="order">
                 </c:when>
                 <c:otherwise>
-                    <form action="/user/authorisation" method="get">
+                    <form action="/" method="get">
+                        <input type="hidden" name="command" value="authorisation">
                 </c:otherwise>
             </c:choose>
                 <table class="table-borderless">
