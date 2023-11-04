@@ -59,7 +59,7 @@
                                 <td class="align-middle">
                                     <c:choose>
                                         <c:when test="${sessionScope.role eq 'Admin'}">
-                                            <a href="<c:url value="/admin/orders/${order.id}"/>">${order.id}</a>
+                                            <a href="<c:url value="/?command=admin_order_manage&orderId=${order.id}"/>">${order.id}</a>
                                         </c:when>
                                         <c:otherwise>
                                             <form action="/user/authorisation" method="get">

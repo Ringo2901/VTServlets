@@ -27,7 +27,7 @@ public class AdminOrderOverviewCommand implements ICommand {
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
         if (request.getMethod().equals("GET")){
-            Order order = orderService.getById(Long.parseLong(request.getPathInfo().substring(1))).orElse(null);
+            Order order = orderService.getById(Long.parseLong(request.getParameter("orderId"))).orElse(null);
             if (order != null) {
                 request.setAttribute(ORDER_ATTRIBUTE, order);
                 return JspPageName.ADMIN_ORDER_MANAGE_PAGE_JSP;
@@ -41,7 +41,7 @@ public class AdminOrderOverviewCommand implements ICommand {
     }
 
     private void change_status (HttpServletRequest request){
-        Long id = Long.parseLong(request.getPathInfo().substring(1));
+        Long id = Long.parseLong(request.getParameter("orderId"));
         OrderStatus newStatus = OrderStatus.fromString(request.getParameter("status"));
         Object lang = request.getSession().getAttribute("lang");
         if (lang == null){

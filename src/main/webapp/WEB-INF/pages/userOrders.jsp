@@ -40,10 +40,11 @@
                 <td class="align-middle">
                   <c:choose>
                   <c:when test="${sessionScope.login eq order.login}">
-                    <a href="<c:url value="/orderOverview/${order.secureID}"/>">${order.id}</a>
+                    <a href="<c:url value="/?command=order_overview&secureId=${order.secureID}"/>">${order.id}</a>
                   </c:when>
                   <c:otherwise>
-                  <form action="/user/authorisation" method="get">
+                  <form action="/" method="get">
+                    <input type="hidden" name="command" value="authorisation">
                     </c:otherwise>
                     </c:choose>
                 </td>

@@ -55,15 +55,18 @@
                         </c:otherwise>
                     </c:choose>
                     <c:if test="${role.equals('Admin')}">
-                    <form action="<c:url value="/?command=admin_orders"/>">
+                    <form action="<c:url value="/"/>">
+                        <input type="hidden" name="command" value="admin_orders">
                         <button class="btn btn-light"> <fmt:message key="master_orders_page" /> </button>
                     </form>
-                    <form action="<c:url value="/?command=admin_users"/>">
+                    <form action="<c:url value="/"/>">
+                        <input type="hidden" name="command" value="admin_users">
                         <button class="btn btn-light"> <fmt:message key="master_users_page" /> </button>
                     </form>
                     </c:if>
                     <c:if test="${role.equals('User')}">
-                        <form action="<c:url value="/?command=user_orders"/>">
+                        <form action="<c:url value="/"/>">
+                            <input type="hidden" name="command" value="user_orders">
                             <button class="btn btn-light"> <fmt:message key="master_orders_page" /> </button>
                         </form>
                     </c:if>

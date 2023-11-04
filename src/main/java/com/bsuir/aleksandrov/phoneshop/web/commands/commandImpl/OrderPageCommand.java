@@ -18,7 +18,6 @@ import java.util.ResourceBundle;
 
 public class OrderPageCommand implements ICommand {
     private static final String ODER_ATTRIBUTE = "order";
-    private static final String SECURE_ID_ATTRIBUTE = "secureId";
     private OrderService orderService = OrderServiceImpl.getInstance();
     private CartService cartService = HttpSessionCartService.getInstance();
     private final String PHONE_VALIDATION_REG_EXP = "^(\\+375)(29|25|44|33)(\\d{3})(\\d{2})(\\d{2})$";
@@ -41,8 +40,7 @@ public class OrderPageCommand implements ICommand {
                     return "http://localhost:8080/?command=order";
                 }
                 if (errorsMap.isEmpty()) {
-                    request.setAttribute(SECURE_ID_ATTRIBUTE, order.getSecureID());
-                    return "http://localhost:8080/?command=order_overview";
+                    return "http://localhost:8080/?command=order_overview&secureId="+order.getSecureID();
                 }
             } else {
                 request.setAttribute("errorsMap", errorsMap);

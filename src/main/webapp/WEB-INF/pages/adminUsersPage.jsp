@@ -58,10 +58,12 @@
                 <td class="align-middle">
                     <c:choose>
                       <c:when test="${sessionScope.role eq 'Admin'}">
-                        <form action="/admin/users" method="post">
+                        <form action="/" method="post">
+                          <input type="hidden" name="command" value="ADMIN_USERS">
                       </c:when>
                       <c:otherwise>
-                        <form action="/user/authorisation" method="get">
+                        <form action="/" method="get">
+                          <input type="hidden" name="command" value="authorisation">
                       </c:otherwise>
                     </c:choose>
                     <input type="hidden" name="userId" value="${user.id}">

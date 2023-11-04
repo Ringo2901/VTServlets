@@ -158,21 +158,20 @@
                     <c:choose>
                         <c:when test="${sessionScope.role eq 'Admin'}">
                             <form>
+                                <input type="hidden" name="command" value="admin_order_manage">
                         </c:when>
                         <c:otherwise>
-                            <form action="/user/authorisation" method="get">
+                            <form action="/" method="get">
+                                <input type="hidden" name="command" value="authorisation">
                         </c:otherwise>
                     </c:choose>
-                        <button class="btn btn-lg btn-secondary" formmethod="get" formaction="<c:url value="/admin/orders"/>">
-                            <fmt:message key="button_back" />
-                        </button>
                         <button class="btn btn-lg btn-secondary"
-                                formmethod="post" formaction="<c:url value="/admin/orders/${order.id}"/>"
+                                formmethod="post" formaction="<c:url value="/?command=admin_order_manage&orderId=${order.id}"/>"
                                 name="status" value="delivered">
                             <fmt:message key="button_delivered" />
                         </button>
                         <button class="btn btn-lg btn-secondary"
-                                formmethod="post" formaction="<c:url value="/admin/orders/${order.id}"/>"
+                                formmethod="post" formaction="<c:url value="/?command=admin_order_manage&orderId=${order.id}"/>"
                                 name="status" value="rejected">
                             <fmt:message key="button_rejected" />
                         </button>
