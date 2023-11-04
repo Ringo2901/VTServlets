@@ -1,30 +1,17 @@
 package com.bsuir.aleksandrov.phoneshop.model.entities.user;
 
 public enum UserRole {
-    Admin,
-    User,
-    Visitor;
+    ADMIN,
+    USER,
+    VISITOR;
 
     @Override
     public String toString() {
-        switch (this) {
-            case Admin:
-                return "Admin";
-            case User:
-                return "User";
-            case Visitor:
-                return "Visitor";
-            default:
-                return "UNKNOWN";
-        }
-    }
-
-    public static UserRole fromString(String status) {
-        for (UserRole userRole : values()) {
-            if (userRole.toString().equalsIgnoreCase(status)) {
-                return userRole;
-            }
-        }
-        return null;
+        return switch (this) {
+            case ADMIN -> "Admin";
+            case USER -> "User";
+            case VISITOR -> "Visitor";
+            default -> "UNKNOWN";
+        };
     }
 }

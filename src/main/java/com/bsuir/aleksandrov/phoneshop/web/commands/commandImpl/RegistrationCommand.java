@@ -27,7 +27,7 @@ public class RegistrationCommand implements ICommand {
     }
 
     private Map<String, String> registration(String login, String password, HttpServletRequest request) throws CommandException {
-        User user = new User(UserRole.User, login, password);
+        User user = new User(UserRole.USER, login, password);
         try {
             return userDao.addUser(user, request);
         } catch (DaoException e) {
