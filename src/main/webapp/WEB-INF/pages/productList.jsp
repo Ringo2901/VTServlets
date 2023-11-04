@@ -113,9 +113,6 @@
                 <input type="number" name="quantity" id="quantity${phone.id}" min="1" required>
                 <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit" style="font-size: 14px"><fmt:message key="button_add" /></button>
               </form>
-              <c:if test="${not empty inputErrors.get(phone.id)}">
-                <div class="error" style="color: red">${inputErrors[phone.id]}</div>
-              </c:if>
             </td>
           </tr>
         </c:forEach>

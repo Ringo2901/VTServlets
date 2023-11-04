@@ -2,6 +2,7 @@ package com.bsuir.aleksandrov.phoneshop.model.entities.order;
 
 import com.bsuir.aleksandrov.phoneshop.model.dao.OrderItemDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcOrderItemDao;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrdersExtractor {
-    public List<Order> extractData(ResultSet resultSet) throws SQLException {
+    public List<Order> extractData(ResultSet resultSet) throws SQLException, DaoException {
         List<Order> orders = new ArrayList<>();
         OrderItemDao orderItemDao = new JdbcOrderItemDao();
         while (resultSet.next()) {

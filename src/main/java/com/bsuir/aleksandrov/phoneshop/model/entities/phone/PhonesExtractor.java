@@ -3,6 +3,7 @@ package com.bsuir.aleksandrov.phoneshop.model.entities.phone;
 import com.bsuir.aleksandrov.phoneshop.model.dao.ColorDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcColorDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.color.Color;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ import java.util.Set;
 public class PhonesExtractor {
     ColorDao colorDao = new JdbcColorDao();
 
-    public List<Phone> extractData(ResultSet resultSet) throws SQLException {
+    public List<Phone> extractData(ResultSet resultSet) throws SQLException, DaoException {
         List<Phone> phones = new ArrayList<>();
         while (resultSet.next()) {
             Phone phone = new Phone();

@@ -1,6 +1,7 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao;
 
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItem;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface OrderItemDao {
      * @param key key of order
      * @return List of OrderItems from order
      */
-    List<OrderItem> getOrderItems(Long key);
+    List<OrderItem> getOrderItems(Long key) throws DaoException;
 }

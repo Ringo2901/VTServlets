@@ -1,6 +1,7 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao;
 
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.net.http.HttpRequest;
@@ -18,7 +19,7 @@ public interface UserDao {
      * @param id id of user
      * @return user
      */
-    Optional<User> findUser(Long id);
+    Optional<User> findUser(Long id) throws DaoException;
 
     /**
      * Find user by login and password
@@ -26,7 +27,7 @@ public interface UserDao {
      * @param password password of user
      * @return user
      */
-    Optional<User> findUserByLoginAndPass(String login, String password);
+    Optional<User> findUserByLoginAndPass(String login, String password) throws DaoException;
 
     /**
      * Add new user to database
@@ -34,17 +35,17 @@ public interface UserDao {
      * @param request request of adding
      * @return map of errors
      */
-    Map<String, String> addUser(User user, HttpServletRequest request);
+    Map<String, String> addUser(User user, HttpServletRequest request) throws DaoException;
 
     /**
      * Delete user from database
      * @param user user to delete
      */
-    void deleteUser(User user);
+    void deleteUser(User user) throws DaoException;
 
     /**
      * Find all users in database
      * @return List of users
      */
-    List<User> findAllUsers();
+    List<User> findAllUsers() throws DaoException;
 }

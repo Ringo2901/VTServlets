@@ -4,6 +4,7 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.cart.Cart;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Optional;
@@ -26,14 +27,14 @@ public interface OrderService {
      * @param request request with cart
      * @throws OutOfStockException throws when some product out of stock when placing cart
      */
-    void placeOrder(Order order, HttpServletRequest request) throws OutOfStockException;
+    void placeOrder(Order order, HttpServletRequest request) throws OutOfStockException, ServiceException;
 
     /**
      * Change order status in database
      * @param id id of order
      * @param status new status of order
      */
-    void changeOrderStatus(Long id, OrderStatus status);
+    void changeOrderStatus(Long id, OrderStatus status) throws ServiceException;
 
-    Optional<Order> getById (Long id);
+    Optional<Order> getById (Long id) throws ServiceException;
 }

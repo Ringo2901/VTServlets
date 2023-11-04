@@ -10,6 +10,6 @@
         <fmt:message key="error_page_title" />
     </h1>
     <p>
-        <fmt:message key="error_page_subtitle" />
+        ${message}
     </p>
 </tags:master>

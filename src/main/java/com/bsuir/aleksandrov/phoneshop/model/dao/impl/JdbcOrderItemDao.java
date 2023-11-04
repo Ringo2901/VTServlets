@@ -3,6 +3,7 @@ package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 import com.bsuir.aleksandrov.phoneshop.model.dao.OrderItemDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItem;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItemsExtractor;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -41,7 +42,7 @@ public class JdbcOrderItemDao implements OrderItemDao {
      * @return List of OrderItems
      */
     @Override
-    public List<OrderItem> getOrderItems(final Long key) {
+    public List<OrderItem> getOrderItems(final Long key) throws DaoException {
         List<OrderItem> orderItems = null;
         Connection conn = null;
         PreparedStatement statement = null;
@@ -53,8 +54,8 @@ public class JdbcOrderItemDao implements OrderItemDao {
             orderItems = orderItemsExtractor.extractData(resultSet);
             log.log(Level.INFO, "Found orderItems in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
             log.log(Level.ERROR, "Error in getOrderItems", ex);
+            throw new DaoException("Error in process of getting orderItems");
         } finally {
             if (statement != null) {
                 try {

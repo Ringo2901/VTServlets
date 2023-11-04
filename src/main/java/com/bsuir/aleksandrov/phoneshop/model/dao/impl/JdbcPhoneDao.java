@@ -6,6 +6,7 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.phone.Phone;
 import com.bsuir.aleksandrov.phoneshop.model.entities.phone.PhonesExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.enums.SortField;
 import com.bsuir.aleksandrov.phoneshop.model.enums.SortOrder;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -78,7 +79,7 @@ public class JdbcPhoneDao implements PhoneDao {
      * @return phone
      */
     @Override
-    public Optional<Phone> get(Long key) {
+    public Optional<Phone> get(Long key) throws DaoException {
         Optional<Phone> phone = null;
         Connection conn = null;
         PreparedStatement statement = null;
@@ -91,6 +92,7 @@ public class JdbcPhoneDao implements PhoneDao {
             log.log(Level.INFO, "Found phones by id in the database");
         } catch (SQLException ex) {
             log.log(Level.ERROR, "Error in get function", ex);
+            throw new DaoException("Error in process of getting phone");
         } finally {
             if (statement != null) {
                 try {
@@ -116,7 +118,7 @@ public class JdbcPhoneDao implements PhoneDao {
      * @return list of phones
      */
     @Override
-    public List<Phone> findAll(int offset, int limit, SortField sortField, SortOrder sortOrder, String query) {
+    public List<Phone> findAll(int offset, int limit, SortField sortField, SortOrder sortOrder, String query) throws DaoException {
         List<Phone> phones = new ArrayList<>();
         String sql = makeFindAllSQL(sortField, sortOrder, query);
         Connection conn = null;
@@ -131,6 +133,7 @@ public class JdbcPhoneDao implements PhoneDao {
             log.log(Level.INFO, "Found all phones in the database");
         } catch (SQLException ex) {
             log.log(Level.ERROR, "Error in findAll", ex);
+            throw new DaoException("Error in process of getting all phones");
         } finally {
             if (statement != null) {
                 try {
@@ -152,7 +155,7 @@ public class JdbcPhoneDao implements PhoneDao {
      * @return
      */
     @Override
-    public Long numberByQuery(String query) {
+    public Long numberByQuery(String query) throws DaoException {
         String sql;
         if (query == null || query.equals("")) {
             sql = NUMBER_OF_PHONES_QUERY;
@@ -175,6 +178,7 @@ public class JdbcPhoneDao implements PhoneDao {
             log.log(Level.INFO, "Found count of phones");
         } catch (SQLException ex) {
             log.log(Level.ERROR, "Error in numberByQuery", ex);
+            throw new DaoException("Error in process of getting number of phones");
         } finally {
             if (statement != null) {
                 try {

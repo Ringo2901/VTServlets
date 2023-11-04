@@ -12,7 +12,7 @@
         <h2><fmt:message key= "cart_title"/></h2>
     </div>
     <c:choose>
-        <c:when test="${not empty inputErrors}">
+        <c:when test="${not empty sessionScope.inputErrors}">
             <div class="container">
                 <div class="panel panel-danger">
                     <div class="panel-heading"><fmt:message key="error_title" /></div>
@@ -21,7 +21,7 @@
             </div>
         </c:when>
         <c:otherwise>
-            <c:if test="${not empty successMessage}">
+            <c:if test="${not empty sessionScope.successMessage}">
                 <div class="container">
                     <div class="panel panel-success">
                         <div class="panel-heading"><fmt:message key="success_title" /></div>
@@ -54,7 +54,8 @@
                             <form action="/?command=cart_update" method="post" id="updateForm">
                         </c:when>
                         <c:otherwise>
-                            <form action="/user/authorisation" method="get">
+                            <form action="/" method="get">
+                                <input type="hidden" name="command" value="authorisation">
                         </c:otherwise>
                     </c:choose>
                     <input type="hidden" name="updateOperation" value="true">
@@ -83,9 +84,6 @@
                                 <td>$ ${cartItem.phone.price}</td>
                                 <td>
                                     <input type="number" name="quantity" value="${cartItem.quantity}" min="1" required>
-                                    <c:if test="${not empty inputErrors.get(cartItem.phone.id)}">
-                                        <div class="error" style="color: red">${inputErrors.get(cartItem.phone.id)}</div>
-                                    </c:if>
                                 </td>
                                 <td>
                                     <input type="hidden" name="id" value="${cartItem.phone.id}">

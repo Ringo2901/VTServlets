@@ -3,6 +3,7 @@ package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 import com.bsuir.aleksandrov.phoneshop.model.dao.UserDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.UsersExtractor;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.log4j.Level;
@@ -87,7 +88,7 @@ public class JdbcUserDao implements UserDao {
      * @return user
      */
     @Override
-    public Optional<User> findUser(Long id) {
+    public Optional<User> findUser(Long id) throws DaoException {
         Optional<User> user = Optional.empty();
         Connection conn = null;
         PreparedStatement statement = null;
@@ -99,8 +100,8 @@ public class JdbcUserDao implements UserDao {
             user = usersExtractor.extractData(resultSet).stream().findAny();
             log.log(Level.INFO, "Found user by id in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
             log.log(Level.ERROR, "Error in findUser", ex);
+            throw new DaoException("Error in process of finding user");
         } finally {
             if (statement != null) {
                 try {
@@ -123,8 +124,8 @@ public class JdbcUserDao implements UserDao {
      * @return user
      */
     @Override
-    public Optional<User> findUserByLoginAndPass(String login, String password) {
-        Optional<User> user = Optional.empty();
+    public Optional<User> findUserByLoginAndPass(String login, String password) throws DaoException {
+        Optional<User> user;
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -137,6 +138,7 @@ public class JdbcUserDao implements UserDao {
             log.log(Level.INFO, "Found user by login and pass in the database");
         } catch (SQLException ex) {
             log.log(Level.ERROR, "Error in findUserByLoginAndPass", ex);
+            throw new DaoException("Error in process of finding user");
         } finally {
             if (statement != null) {
                 try {
@@ -159,7 +161,7 @@ public class JdbcUserDao implements UserDao {
      * @return Map with errors or success messages
      */
     @Override
-    public Map<String, String> addUser(User user, HttpServletRequest request) {
+    public Map<String, String> addUser(User user, HttpServletRequest request) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         Map<String, String> messages = new HashMap<>();
@@ -187,6 +189,7 @@ public class JdbcUserDao implements UserDao {
             log.log(Level.INFO, "Add user");
         } catch (SQLException ex) {
             log.log(Level.ERROR, "Error in addUser", ex);
+            throw new DaoException("Error in process of adding user");
         } finally {
             if (statement != null) {
                 try {
@@ -207,7 +210,7 @@ public class JdbcUserDao implements UserDao {
      * @param user user to delete
      */
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(User user) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -219,6 +222,7 @@ public class JdbcUserDao implements UserDao {
             log.log(Level.INFO, "Delete user");
         } catch (SQLException ex) {
             log.log(Level.ERROR, "Error in deleteUser", ex);
+            throw new DaoException("Error in process of deleting user");
         } finally {
             if (statement != null) {
                 try {
@@ -238,7 +242,7 @@ public class JdbcUserDao implements UserDao {
      * @return List of users
      */
     @Override
-    public List<User> findAllUsers() {
+    public List<User> findAllUsers() throws DaoException {
         List<User> users = new ArrayList<>();
         Connection conn = null;
         Statement statement = null;
@@ -250,6 +254,7 @@ public class JdbcUserDao implements UserDao {
             log.log(Level.INFO, "Found all users in the database");
         } catch (SQLException ex) {
             log.log(Level.ERROR, "Error in findAllUsers", ex);
+            throw new DaoException("Error in process of finding all users");
         } finally {
             if (statement != null) {
                 try {

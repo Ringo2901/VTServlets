@@ -8,7 +8,9 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.cart.Cart;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItem;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import com.bsuir.aleksandrov.phoneshop.model.service.CartService;
 import com.bsuir.aleksandrov.phoneshop.model.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,12 +19,15 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 /**
  * Using to manage orders
+ *
  * @author nekit
  * @version 1.0
  */
@@ -46,6 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * Realisation of Singleton pattern
+     *
      * @return instance of orderService
      */
     public static OrderService getInstance() {
@@ -61,6 +67,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * Create empty order and fill order items
+     *
      * @param cart cart with items
      * @return order
      */
@@ -76,43 +83,64 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * Place order in database
-     * @param order order to place
+     *
+     * @param order   order to place
      * @param request request with cart
      * @throws OutOfStockException throws when some products out of stock during placing
      */
     @Override
-    public void placeOrder(final Order order, HttpServletRequest request) throws OutOfStockException {
+    public void placeOrder(final Order order, HttpServletRequest request) throws OutOfStockException, ServiceException {
         checkStock(request, order);
         order.setDate(new Date(Instant.now().toEpochMilli()));
         order.setTime(new Time(Instant.now().toEpochMilli()));
         order.setLogin(request.getSession().getAttribute("login").toString());
         order.setStatus(OrderStatus.NEW);
-        order.getOrderItems().stream()
-                .forEach(item -> stockDao.reserve(item.getPhone().getId(), item.getQuantity()));
-        order.setSecureID(UUID.randomUUID().toString());
-        orderDao.save(order);
+        try {
+            for (OrderItem item : order.getOrderItems()) {
+                try {
+                    stockDao.reserve(item.getPhone().getId(), item.getQuantity());
+                } catch (DaoException e) {
+                    throw new ServiceException(e.getMessage());
+                }
+            }
+
+            order.setSecureID(UUID.randomUUID().toString());
+            orderDao.save(order);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         cartService.clear(request.getSession());
     }
 
     /**
      * Changing order status in database
-     * @param id id of order
+     *
+     * @param id     id of order
      * @param status new status of order
      */
     @Override
-    public void changeOrderStatus(Long id, OrderStatus status) {
-        orderDao.changeStatus(id, status);
+    public void changeOrderStatus(Long id, OrderStatus status) throws ServiceException {
+        try {
+            orderDao.changeStatus(id, status);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
     }
 
     @Override
-    public Optional<Order> getById(Long id) {
-        return orderDao.getById(id);
+    public Optional<Order> getById(Long id) throws ServiceException {
+        try {
+            return orderDao.getById(id);
+        } catch (DaoException e){
+            throw new ServiceException(e.getMessage());
+        }
     }
 
     /**
      * Fill order items from cart to order
+     *
      * @param order order to fill
-     * @param cart cart with items
+     * @param cart  cart with items
      */
     private void fillOrderItems(Order order, Cart cart) {
         List<OrderItem> orderItems = cart.getItems().stream()
@@ -130,14 +158,23 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * Check stock of items in order
+     *
      * @param request request with cart to remove in case of out of stock
-     * @param order order to check
+     * @param order   order to check
      * @throws OutOfStockException throws when some products out of stock during placing
      */
-    private void checkStock(HttpServletRequest request, final Order order) throws OutOfStockException {
-        List<OrderItem> outOfStockItems = order.getOrderItems().stream()
-                .filter(item -> stockDao.availableStock(item.getPhone().getId()) - item.getQuantity() < 0)
-                .collect(Collectors.toList());
+    private void checkStock(HttpServletRequest request, final Order order) throws OutOfStockException, ServiceException {
+        List<OrderItem> outOfStockItems = new ArrayList<>();
+
+        for (OrderItem item : order.getOrderItems()) {
+            try {
+                if (stockDao.availableStock(item.getPhone().getId()) - item.getQuantity() < 0) {
+                    outOfStockItems.add(item);
+                }
+            } catch (DaoException e) {
+                throw new ServiceException(e.getMessage());
+            }
+        }
         if (!outOfStockItems.isEmpty()) {
             StringBuilder outOfStockModels = new StringBuilder();
             outOfStockItems.stream().forEach(item -> {

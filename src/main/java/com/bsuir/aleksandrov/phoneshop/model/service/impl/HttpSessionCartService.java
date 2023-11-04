@@ -7,15 +7,18 @@ import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcStockDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.cart.Cart;
 import com.bsuir.aleksandrov.phoneshop.model.entities.cart.CartItem;
 import com.bsuir.aleksandrov.phoneshop.model.entities.phone.Phone;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import com.bsuir.aleksandrov.phoneshop.model.service.CartService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+
 /**
  * Service to work with cart
+ *
  * @author nekit
  * @version 1.0
  */
@@ -43,6 +46,7 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Realisation of Singleton pattern
+     *
      * @return instance of HttpSessionCartServiece
      */
 
@@ -67,6 +71,7 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Get cart from session
+     *
      * @param currentSession session with cart
      * @return cart from session
      */
@@ -87,17 +92,23 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Add Phone to cart
-     * @param cart cart to adding
-     * @param productId productId of phone to add
-     * @param quantity quantity of phone to add
+     *
+     * @param cart           cart to adding
+     * @param productId      productId of phone to add
+     * @param quantity       quantity of phone to add
      * @param currentSession session with cart
      * @throws OutOfStockException throws when phone outOfStock
      */
     @Override
-    public void add(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException {
+    public void add(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException, ServiceException {
         Optional<CartItem> productMatch;
         synchronized (currentSession) {
-            Phone phone = phoneDao.get(productId).orElse(null);
+            Phone phone;
+            try {
+                phone = phoneDao.get(productId).orElse(null);
+            } catch (DaoException e) {
+                throw new ServiceException(e.getMessage());
+            }
             if (phone != null) {
                 if (countingQuantityIncludingCart(cart, phone) < quantity) {
                     throw new OutOfStockException(phone, quantity, countingQuantityIncludingCart(cart, phone));
@@ -117,12 +128,18 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Calculate quantity of phone with cart
-     * @param cart cart with phones to recalculate
+     *
+     * @param cart  cart with phones to recalculate
      * @param phone phone to recalculate
      * @return available quantity of phone minus quantity of phone in cart
      */
-    private int countingQuantityIncludingCart(Cart cart, Phone phone) {
-        int result = stockDao.availableStock(phone.getId());
+    private int countingQuantityIncludingCart(Cart cart, Phone phone) throws ServiceException {
+        int result = 0;
+        try {
+            result = stockDao.availableStock(phone.getId());
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         Integer quantityInCart = cart.getItems().stream()
                 .filter(currProduct -> currProduct.getPhone().equals(phone))
                 .map(CartItem::getQuantity)
@@ -134,18 +151,29 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Update quantity of phone in cart
-     * @param cart cart to update
-     * @param productId id of phone to update
-     * @param quantity quantity of phone to update
+     *
+     * @param cart           cart to update
+     * @param productId      id of phone to update
+     * @param quantity       quantity of phone to update
      * @param currentSession session with cart
      * @throws OutOfStockException throws when phone quantity out of stock during updating
      */
     @Override
-    public void update(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException {
+    public void update(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException, ServiceException {
         synchronized (currentSession) {
-            Phone phone = phoneDao.get(productId).orElse(null);
+            Phone phone;
+            try {
+                phone = phoneDao.get(productId).orElse(null);
+            } catch (DaoException e) {
+                throw new ServiceException(e.getMessage());
+            }
             if (phone != null) {
-                int availableStock = stockDao.availableStock(phone.getId());
+                int availableStock = 0;
+                try {
+                    availableStock = stockDao.availableStock(phone.getId());
+                } catch (DaoException e) {
+                    throw new ServiceException(e.getMessage());
+                }
                 if (quantity > availableStock) {
                     throw new OutOfStockException(phone, quantity, availableStock);
                 }
@@ -159,8 +187,9 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Delete item from cart
-     * @param cart cart to delete
-     * @param productId id of phone to delete
+     *
+     * @param cart           cart to delete
+     * @param productId      id of phone to delete
      * @param currentSession session with cart
      */
     @Override
@@ -173,6 +202,7 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Recalculate cart
+     *
      * @param cartToRecalculate cat to recalculate
      */
     @Override
@@ -194,7 +224,8 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Find cart item in cart
-     * @param cart cart in witch we find
+     *
+     * @param cart    cart in witch we find
      * @param product product to find
      * @return cartItem
      */
@@ -206,6 +237,7 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Clear cart in request
+     *
      * @param currentSession session with cart
      */
     @Override
@@ -217,8 +249,9 @@ public class HttpSessionCartService implements CartService {
 
     /**
      * Remove item from cart
+     *
      * @param currentSession session with cart
-     * @param phoneId id of phone to remove
+     * @param phoneId        id of phone to remove
      */
     @Override
     public void remove(HttpSession currentSession, Long phoneId) {

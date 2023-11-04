@@ -9,7 +9,7 @@
 <tags:master pageTitle="Phohe Details">
 
     <c:choose>
-        <c:when test="${not empty sessionScope.inputErrors}">
+        <c:when test="${not empty param.inputErrors}">
             <div class="container">
                 <div class="panel panel-danger">
                     <div class="panel-heading"><fmt:message key="error_title" /></div>
@@ -18,11 +18,11 @@
             </div>
         </c:when>
         <c:otherwise>
-            <c:if test="${not empty param.message}">
+            <c:if test="${not empty param.successMessage}">
                 <div class="container">
                     <div class="panel panel-success">
                         <div class="panel-heading"><fmt:message key="success_title" /></div>
-                        <div class="panel-body">${param.message}</div>
+                        <div class="panel-body">${param.successMessage}</div>
                     </div>
                 </div>
             </c:if>
@@ -52,9 +52,6 @@
 
                         <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit"><fmt:message key="button_add" /></button>
                     </form>
-                    <c:if test="${not empty sessionScope.inputErrors.get(phone.id)}">
-                        <div class="error" style="color: red">${sessionScope.inputErrors.get(phone.id)}</div>
-                    </c:if>
                 </div>
 
             </div>

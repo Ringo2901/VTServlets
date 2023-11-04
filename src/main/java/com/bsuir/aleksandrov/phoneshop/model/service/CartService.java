@@ -2,6 +2,7 @@ package com.bsuir.aleksandrov.phoneshop.model.service;
 
 import com.bsuir.aleksandrov.phoneshop.model.entities.cart.Cart;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -25,7 +26,7 @@ public interface CartService {
      * @param currentSession session with cart
      * @throws OutOfStockException throws when phone out of stock when adding
      */
-    void add(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException;
+    void add(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException, ServiceException;
 
     /**
      * Update phone in cart
@@ -36,7 +37,7 @@ public interface CartService {
      * @throws OutOfStockException throws when phone out of stock when updating
      */
 
-    void update(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException;
+    void update(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException, ServiceException;
 
     /**
      * Delete phone from cart

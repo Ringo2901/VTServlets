@@ -4,6 +4,7 @@ import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.StockDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.stock.Stock;
 import com.bsuir.aleksandrov.phoneshop.model.entities.stock.StocksExtractor;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -65,7 +66,7 @@ public class JdbcStockDao implements StockDao {
      * @return available stock
      */
     @Override
-    public Integer availableStock(Long phoneId) {
+    public Integer availableStock(Long phoneId) throws DaoException {
         Stock stock = getStock(phoneId);
         if (stock != null) {
             return stock.getStock() - stock.getReserved();
@@ -80,7 +81,7 @@ public class JdbcStockDao implements StockDao {
      * @param quantity - quantity to add in reserve field
      */
     @Override
-    public void reserve(Long phoneId, int quantity) {
+    public void reserve(Long phoneId, int quantity) throws DaoException {
         Stock stock = getStock(phoneId);
         if (stock != null) {
             int newReserved = stock.getReserved() + quantity;
@@ -95,6 +96,7 @@ public class JdbcStockDao implements StockDao {
                 log.log(Level.INFO, "Update reserve stock in the database");
             } catch (SQLException ex) {
                 log.log(Level.ERROR, "Error in reserve", ex);
+                throw new DaoException("Error in process of reserving stock");
             } finally {
                 if (statement != null) {
                     try {
@@ -115,7 +117,7 @@ public class JdbcStockDao implements StockDao {
      * @param phoneId id of phone
      * @return stock of phone
      */
-    private Stock getStock(Long phoneId) {
+    private Stock getStock(Long phoneId) throws DaoException {
         Stock stock = null;
         Connection conn = null;
         PreparedStatement statement = null;
@@ -127,8 +129,8 @@ public class JdbcStockDao implements StockDao {
             stock = stocksExtractor.extractData(resultSet).get(0);
             log.log(Level.INFO, "Found stock by phoneId in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
             log.log(Level.ERROR, "Error in getStock", ex);
+            throw new DaoException("Error in process of getting stock");
         } finally {
             if (statement != null) {
                 try {

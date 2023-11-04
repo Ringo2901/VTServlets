@@ -3,6 +3,7 @@ package com.bsuir.aleksandrov.phoneshop.web.commands.commandImpl;
 import com.bsuir.aleksandrov.phoneshop.model.dao.UserDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcUserDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
 import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
@@ -28,8 +29,13 @@ public class LoginCommand implements ICommand {
         }
     }
 
-    private Map<String, String> login(HttpServletRequest request, String login, String password) {
-        User user = userDao.findUserByLoginAndPass(login, password).orElse(null);
+    private Map<String, String> login(HttpServletRequest request, String login, String password) throws CommandException {
+        User user;
+        try {
+            user = userDao.findUserByLoginAndPass(login, password).orElse(null);
+        } catch (DaoException e) {
+            throw new CommandException(e.getMessage());
+        }
         Object lang = request.getSession().getAttribute("lang");
         if (lang == null) {
             lang = "en";

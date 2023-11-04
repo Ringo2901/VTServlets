@@ -35,8 +35,7 @@ public class FrontController extends HttpServlet {
             try {
                 page = command.execute(request);
             } catch (CommandException e) {
-                page = JspPageName.ERROR_PAGE;
-            } catch (Exception e) {
+                request.setAttribute("message", e.getMessage());
                 page = JspPageName.ERROR_PAGE;
             }
             if (request.getMethod().equals("GET")) {
@@ -50,7 +49,7 @@ public class FrontController extends HttpServlet {
                 response.sendRedirect(page);
             }
         } else {
-            if (request.getParameter("sessionLocale")!=null){
+            if (request.getParameter("sessionLocale") != null) {
                 response.sendRedirect(request.getHeader("Referer"));
             }
         }

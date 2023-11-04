@@ -3,6 +3,7 @@ package com.bsuir.aleksandrov.phoneshop.web.commands.commandImpl;
 import com.bsuir.aleksandrov.phoneshop.model.dao.UserDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcUserDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
 import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
@@ -23,7 +24,11 @@ public class AdminUsersCommand implements ICommand {
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
         if (request.getMethod().equals("GET")){
-            request.setAttribute(USERS_ATTRIBUTE, userDao.findAllUsers());
+            try {
+                request.setAttribute(USERS_ATTRIBUTE, userDao.findAllUsers());
+            } catch (DaoException e) {
+                throw new CommandException(e.getMessage());
+            }
             return JspPageName.ADMIN_USERS_PAGE_JSP;
         } else{
             deleteUser(request);
@@ -31,9 +36,14 @@ public class AdminUsersCommand implements ICommand {
         }
     }
 
-    private void deleteUser(HttpServletRequest request){
+    private void deleteUser(HttpServletRequest request) throws CommandException {
         Long userId = Long.valueOf(request.getParameter("userId"));
-        User user = userDao.findUser(userId).orElse(null);
+        User user = null;
+        try {
+            user = userDao.findUser(userId).orElse(null);
+        } catch (DaoException e) {
+            throw new CommandException(e.getMessage());
+        }
         Object lang = request.getSession().getAttribute("lang");
         if (lang == null){
             lang = "en";
@@ -41,7 +51,11 @@ public class AdminUsersCommand implements ICommand {
         Locale locale = new Locale(lang.toString());
         ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         if (user != null) {
-            userDao.deleteUser(user);
+            try {
+                userDao.deleteUser(user);
+            } catch (DaoException e) {
+                throw new CommandException(e.getMessage());
+            }
             request.setAttribute(SUCCESS_ATTRIBUTE, rb.getString("user_delete_success"));
         } else {
             request.setAttribute(ERROR_ATTRIBUTE, rb.getString("error_message"));

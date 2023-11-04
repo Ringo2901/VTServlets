@@ -2,6 +2,7 @@ package com.bsuir.aleksandrov.phoneshop.model.dao;
 
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ public interface OrderDao {
      * @param key - id of order
      * @return order
      */
-    Optional<Order> getById(Long key);
+    Optional<Order> getById(Long key) throws DaoException;
 
     /**
      * Find order from database using secureId
@@ -24,19 +25,19 @@ public interface OrderDao {
      * @return - order
      */
 
-    Optional<Order> getBySecureID(String secureID);
+    Optional<Order> getBySecureID(String secureID) throws DaoException;
 
     /**
      * Save order in database
      * @param order - order to save
      */
-    void save(Order order);
+    void save(Order order) throws DaoException;
 
     /**
      * Find all orders in database
      * @return List of orders
      */
-    List<Order> findOrders();
+    List<Order> findOrders() throws DaoException;
 
     /**
      * Find orders of user with login
@@ -44,12 +45,12 @@ public interface OrderDao {
      * @return List of orders
      */
 
-    List<Order> findOrdersByLogin(String login);
+    List<Order> findOrdersByLogin(String login) throws DaoException;
 
     /**
      * Change status of order
      * @param id id of order
      * @param status new status of order
      */
-    void changeStatus(Long id, OrderStatus status);
+    void changeStatus(Long id, OrderStatus status) throws DaoException;
 }

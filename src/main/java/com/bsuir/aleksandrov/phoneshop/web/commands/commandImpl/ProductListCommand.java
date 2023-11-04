@@ -4,16 +4,12 @@ import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcPhoneDao;
 import com.bsuir.aleksandrov.phoneshop.model.enums.SortField;
 import com.bsuir.aleksandrov.phoneshop.model.enums.SortOrder;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
 import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Optional;
 
 public class ProductListCommand implements ICommand {
@@ -25,13 +21,19 @@ public class ProductListCommand implements ICommand {
     private static final String PAGE_PARAMETER = "page";
     private static final String PAGE_ATTRIBUTE = "numberOfPages";
     private static final int PHONES_ON_PAGE = 10;
+
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
         String pageNumber = request.getParameter(PAGE_PARAMETER);
-        request.setAttribute(PHONES_ATTRIBUTE, phoneDao.findAll(((pageNumber == null ? 1 : Integer.parseInt(pageNumber)) - 1) * PHONES_ON_PAGE, PHONES_ON_PAGE,
-                Optional.ofNullable(request.getParameter(SORT_PARAMETER)).map(SortField::valueOf).orElse(null),
-                Optional.ofNullable(request.getParameter(ORDER_PARAMETER)).map(SortOrder::valueOf).orElse(null), request.getParameter(QUERY_PARAMETER)));
-        Long number = phoneDao.numberByQuery(request.getParameter(QUERY_PARAMETER));
+        Long number;
+        try {
+            request.setAttribute(PHONES_ATTRIBUTE, phoneDao.findAll(((pageNumber == null ? 1 : Integer.parseInt(pageNumber)) - 1) * PHONES_ON_PAGE, PHONES_ON_PAGE,
+                    Optional.ofNullable(request.getParameter(SORT_PARAMETER)).map(SortField::valueOf).orElse(null),
+                    Optional.ofNullable(request.getParameter(ORDER_PARAMETER)).map(SortOrder::valueOf).orElse(null), request.getParameter(QUERY_PARAMETER)));
+            number = phoneDao.numberByQuery(request.getParameter(QUERY_PARAMETER));
+        } catch (DaoException e) {
+            throw new CommandException(e.getMessage());
+        }
         request.setAttribute(PAGE_ATTRIBUTE, (number + PHONES_ON_PAGE - 1) / PHONES_ON_PAGE);
         return JspPageName.PRODUCT_LIST_JSP;
     }

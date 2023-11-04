@@ -1,6 +1,7 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao;
 
 import com.bsuir.aleksandrov.phoneshop.model.entities.color.Color;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface ColorDao {
      * @param id - id of phone
      * @return List of colors
      */
-    List<Color> getColors(Long id);
+    List<Color> getColors(Long id) throws DaoException;
 }

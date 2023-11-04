@@ -3,6 +3,7 @@ package com.bsuir.aleksandrov.phoneshop.model.dao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.phone.Phone;
 import com.bsuir.aleksandrov.phoneshop.model.enums.SortField;
 import com.bsuir.aleksandrov.phoneshop.model.enums.SortOrder;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ public interface PhoneDao {
      * @param key id of phone
      * @return phone with id
      */
-    Optional<Phone> get(Long key);
+    Optional<Phone> get(Long key) throws DaoException;
 
     /**
      * Find phones from database
@@ -29,12 +30,12 @@ public interface PhoneDao {
      * @return List of phones
      */
 
-    List<Phone> findAll(int offset, int limit, SortField sortField, SortOrder sortOrder, String query);
+    List<Phone> findAll(int offset, int limit, SortField sortField, SortOrder sortOrder, String query) throws DaoException;
 
     /**
      * Number of founded phones
      * @param query - query for find
      * @return number of phones
      */
-    Long numberByQuery(String query);
+    Long numberByQuery(String query) throws DaoException;
 }

@@ -1,6 +1,8 @@
 package com.bsuir.aleksandrov.phoneshop.web.commands.commandImpl;
 
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import com.bsuir.aleksandrov.phoneshop.model.service.CartService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.HttpSessionCartService;
 import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
@@ -8,6 +10,7 @@ import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.security.Provider;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -35,22 +38,22 @@ public class CartAddCommand implements ICommand {
             inputErrors.put((long) phoneId, rb.getString("NOT_ENOUGH_ERROR") + e.getAvailableStock());
         } catch (ParseException e) {
             inputErrors.put((long) phoneId, rb.getString("NOT_A_NUMBER_ERROR"));
+        } catch (ServiceException e){
+            throw new CommandException(e.getMessage());
         }
         String referer = request.getHeader("Referer");
         if (inputErrors.isEmpty()) {
             if (referer.contains("successMessage")){
                 return referer;
-            } else{
-                return referer+"&successMessage="+rb.getString("add_success");
+            } else {
+                return referer + "&successMessage=" + rb.getString("add_success");
             }
-            //request.getSession().setAttribute("successMessage", rb.getString("add_success"));
         } else {
             if (referer.contains("inputErrors")){
                 return referer;
             } else {
                 return referer + "&inputErrors="+inputErrors.values();
             }
-            //request.getSession().setAttribute("inputErrors", inputErrors);
         }
     }
 

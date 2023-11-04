@@ -4,6 +4,7 @@ import com.bsuir.aleksandrov.phoneshop.model.dao.OrderDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.impl.JdbcOrderDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import com.bsuir.aleksandrov.phoneshop.model.service.OrderService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.OrderServiceImpl;
 import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
@@ -27,7 +28,12 @@ public class AdminOrderOverviewCommand implements ICommand {
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
         if (request.getMethod().equals("GET")){
-            Order order = orderService.getById(Long.parseLong(request.getParameter("orderId"))).orElse(null);
+            Order order;
+            try {
+                order = orderService.getById(Long.parseLong(request.getParameter("orderId"))).orElse(null);
+            } catch (ServiceException e) {
+                throw new CommandException(e.getMessage());
+            }
             if (order != null) {
                 request.setAttribute(ORDER_ATTRIBUTE, order);
                 return JspPageName.ADMIN_ORDER_MANAGE_PAGE_JSP;
@@ -40,7 +46,7 @@ public class AdminOrderOverviewCommand implements ICommand {
         }
     }
 
-    private void change_status (HttpServletRequest request){
+    private void change_status (HttpServletRequest request) throws CommandException {
         Long id = Long.parseLong(request.getParameter("orderId"));
         OrderStatus newStatus = OrderStatus.fromString(request.getParameter("status"));
         Object lang = request.getSession().getAttribute("lang");
@@ -50,11 +56,19 @@ public class AdminOrderOverviewCommand implements ICommand {
         Locale locale = new Locale(lang.toString());
         ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         if (newStatus != null) {
-            orderService.changeOrderStatus(id, newStatus);
+            try {
+                orderService.changeOrderStatus(id, newStatus);
+            } catch (ServiceException e) {
+                throw new CommandException(e.getMessage());
+            }
             request.setAttribute(SUCCESS_ATTRIBUTE, rb.getString("status_change_success"));
         } else {
             request.setAttribute(ERROR_ATTRIBUTE, rb.getString("error_message"));
         }
-        request.setAttribute(ORDER_ATTRIBUTE, orderService.getById(id).orElse(null));
+        try {
+            request.setAttribute(ORDER_ATTRIBUTE, orderService.getById(id).orElse(null));
+        } catch (ServiceException e) {
+            throw new CommandException(e.getMessage());
+        }
     }
 }

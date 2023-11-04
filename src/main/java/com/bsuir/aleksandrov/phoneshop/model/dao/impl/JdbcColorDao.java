@@ -3,6 +3,7 @@ package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 import com.bsuir.aleksandrov.phoneshop.model.dao.ColorDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.color.Color;
 import com.bsuir.aleksandrov.phoneshop.model.entities.color.ColorsExtractor;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -16,6 +17,7 @@ import java.util.List;
 
 /**
  * Using jdbc to work with colors
+ *
  * @author nekit
  * @version 1.0
  */
@@ -41,11 +43,12 @@ public class JdbcColorDao implements ColorDao {
 
     /**
      * Get colors from database
+     *
      * @param id - id of phone
      * @return List of colors
      */
     @Override
-    public List<Color> getColors(Long id) {
+    public List<Color> getColors(Long id) throws DaoException {
         List<Color> colors = new ArrayList<>();
         Connection conn = null;
         PreparedStatement statement = null;
@@ -57,14 +60,15 @@ public class JdbcColorDao implements ColorDao {
             colors = colorExtractor.extractData(resultSet);
             log.log(Level.INFO, "Found colors in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
-             log.log(Level.ERROR, "Error in getColors", ex);
+            log.log(Level.ERROR, "Error in getColors", ex);
+            throw new DaoException("Error in process of getting colors");
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
                     log.log(Level.ERROR, "Error in closing statement", ex);
+                    throw new DaoException("Error in process getting colors");
                 }
             }
             if (conn != null) {

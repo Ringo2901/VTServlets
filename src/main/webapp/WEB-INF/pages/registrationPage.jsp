@@ -9,16 +9,16 @@
 <tags:master pageTitle="User Registration">
   <div class="container">
     <h2><fmt:message key="registration_title" /></h2>
-    <c:if test="${not empty messages.get('success')}">
+    <c:if test="${not empty message.get('success')}">
         <div class="panel panel-success">
           <div class="panel-heading"><fmt:message key="success_title" /></div>
-          <div class="panel-body">${messages.get('success')}</div>
+          <div class="panel-body">${message.get('success')}</div>
         </div>
     </c:if>
-    <c:if test="${not empty messages.get('error')}">
+    <c:if test="${not empty message.get('error')}">
         <div class="panel panel-danger">
           <div class="panel-heading"><fmt:message key="error_title" /></div>
-          <div class="panel-body">${messages.get('error')}</div>
+          <div class="panel-body">${message.get('error')}</div>
         </div>
     </c:if>
     <form action="/" method="post">

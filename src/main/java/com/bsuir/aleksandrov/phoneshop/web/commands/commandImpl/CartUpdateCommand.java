@@ -1,6 +1,7 @@
 package com.bsuir.aleksandrov.phoneshop.web.commands.commandImpl;
 
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import com.bsuir.aleksandrov.phoneshop.model.service.CartService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.HttpSessionCartService;
 import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
@@ -43,6 +44,8 @@ public class CartUpdateCommand implements ICommand {
                 inputErrors.put(
                         Long.parseLong(productIds[i]),
                         rb.getString("NOT_A_NUMBER_ERROR"));
+            } catch (ServiceException e){
+                throw new CommandException(e.getMessage());
             }
         }
         if (!inputErrors.isEmpty()) {

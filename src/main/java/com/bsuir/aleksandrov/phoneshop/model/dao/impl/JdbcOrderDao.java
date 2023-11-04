@@ -6,6 +6,7 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItem;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrdersExtractor;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -88,7 +89,7 @@ public class JdbcOrderDao implements OrderDao {
      * @return order
      */
     @Override
-    public Optional<Order> getById(final Long key) {
+    public Optional<Order> getById(final Long key) throws DaoException {
         Optional<Order> order = null;
         Connection conn = null;
         PreparedStatement statement = null;
@@ -100,8 +101,8 @@ public class JdbcOrderDao implements OrderDao {
             order = ordersExtractor.extractData(resultSet).stream().findAny();
             log.log(Level.INFO, "Found order by id in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
             log.log(Level.ERROR, "Error in getById", ex);
+            throw new DaoException("Error in process of getting order");
         } finally {
             if (statement != null) {
                 try {
@@ -123,7 +124,7 @@ public class JdbcOrderDao implements OrderDao {
      * @return order
      */
     @Override
-    public Optional<Order> getBySecureID(String secureID) {
+    public Optional<Order> getBySecureID(String secureID) throws DaoException {
         Optional<Order> order = null;
         PreparedStatement statement = null;
         Connection conn = null;
@@ -135,8 +136,8 @@ public class JdbcOrderDao implements OrderDao {
             order = ordersExtractor.extractData(resultSet).stream().findAny();
             log.log(Level.INFO, "Found orders by secureId in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
             log.log(Level.ERROR, "Error in getBySecureID", ex);
+            throw new DaoException("Error in process of getting order");
         } finally {
             if (statement != null) {
                 try {
@@ -157,7 +158,7 @@ public class JdbcOrderDao implements OrderDao {
      * @return List of orders
      */
     @Override
-    public List<Order> findOrders() {
+    public List<Order> findOrders() throws DaoException {
         List<Order> orders = null;
         Statement statement = null;
         Connection conn = null;
@@ -168,8 +169,8 @@ public class JdbcOrderDao implements OrderDao {
             orders = ordersExtractor.extractData(resultSet);
             log.log(Level.INFO, "Found all orders in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
             log.log(Level.ERROR, "Error in findOrders", ex);
+            throw new DaoException("Error in process of finding orders");
         } finally {
             if (statement != null) {
                 try {
@@ -191,7 +192,7 @@ public class JdbcOrderDao implements OrderDao {
      * @return List of orders
      */
     @Override
-    public List<Order> findOrdersByLogin(String login) {
+    public List<Order> findOrdersByLogin(String login) throws DaoException {
         List<Order> orders = null;
         PreparedStatement statement = null;
         Connection conn = null;
@@ -203,8 +204,8 @@ public class JdbcOrderDao implements OrderDao {
             orders = ordersExtractor.extractData(resultSet);
             log.log(Level.INFO, "Found orders by login in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
             log.log(Level.ERROR, "Error in findOrdersByLogin", ex);
+            throw new DaoException("Error in process of finding orders");
         } finally {
             if (statement != null) {
                 try {
@@ -226,7 +227,7 @@ public class JdbcOrderDao implements OrderDao {
      * @param status new status of order
      */
     @Override
-    public void changeStatus(Long id, OrderStatus status) {
+    public void changeStatus(Long id, OrderStatus status) throws DaoException {
         PreparedStatement statement = null;
         Connection conn = null;
         try {
@@ -237,8 +238,8 @@ public class JdbcOrderDao implements OrderDao {
             statement.executeUpdate();
             log.log(Level.INFO, "Status changed in the database");
         } catch (SQLException ex) {
-            ex.printStackTrace();
             log.log(Level.ERROR, "Error in changeStatus", ex);
+            throw new DaoException("Error in process of changing status");
         } finally {
             if (statement != null) {
                 try {
@@ -258,7 +259,7 @@ public class JdbcOrderDao implements OrderDao {
      * @param order - order to save
      */
     @Override
-    public void save(final Order order) {
+    public void save(final Order order) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
 
@@ -296,6 +297,7 @@ public class JdbcOrderDao implements OrderDao {
             }
         } catch (SQLException ex) {
             log.log(Level.ERROR, "Error in order save", ex);
+            throw new DaoException("Error in process of saving order");
         } finally {
             if (statement != null) {
                 try {

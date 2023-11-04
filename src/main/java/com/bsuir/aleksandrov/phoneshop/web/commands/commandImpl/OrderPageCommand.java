@@ -2,6 +2,7 @@ package com.bsuir.aleksandrov.phoneshop.web.commands.commandImpl;
 
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
+import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import com.bsuir.aleksandrov.phoneshop.model.service.CartService;
 import com.bsuir.aleksandrov.phoneshop.model.service.OrderService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.HttpSessionCartService;
@@ -38,6 +39,8 @@ public class OrderPageCommand implements ICommand {
                     errorsMap.put(0, exception.getMessage());
                     request.setAttribute("errorsMap", errorsMap);
                     return "http://localhost:8080/?command=order";
+                } catch (ServiceException e) {
+                    throw new CommandException(e.getMessage());
                 }
                 if (errorsMap.isEmpty()) {
                     return "http://localhost:8080/?command=order_overview&secureId="+order.getSecureID();
