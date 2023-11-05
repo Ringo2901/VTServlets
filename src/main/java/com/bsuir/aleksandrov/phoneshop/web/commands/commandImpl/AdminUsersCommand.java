@@ -32,14 +32,13 @@ public class AdminUsersCommand implements ICommand {
      */
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
-        if (request.getMethod().equals("GET")) {
-            try {
-                request.setAttribute(USERS_ATTRIBUTE, userDao.findAllUsers());
-            } catch (DaoException e) {
-                throw new CommandException(e.getMessage());
+        try {
+            if (!request.getMethod().equals("GET")) {
+                deleteUser(request);
             }
-        } else {
-            deleteUser(request);
+            request.setAttribute(USERS_ATTRIBUTE, userDao.findAllUsers());
+        } catch (DaoException e) {
+            throw new CommandException(e.getMessage());
         }
         return JspPageName.ADMIN_USERS_PAGE_JSP;
     }

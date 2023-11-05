@@ -3,6 +3,7 @@ package com.bsuir.aleksandrov.phoneshop.model.dao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 import java.util.Map;
@@ -36,11 +37,11 @@ public interface UserDao {
      * Add new user to database
      *
      * @param user    user to add
-     * @param request request of adding
+     * @param session session of adding
      * @return map of errors
      * @throws DaoException throws when there is some errors during dao method execution
      */
-    Map<String, String> addUser(User user, HttpServletRequest request) throws DaoException;
+    Map<String, String> addUser(User user, HttpSession session) throws DaoException;
 
     /**
      * Delete user from database

@@ -9,6 +9,8 @@ import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -34,7 +36,7 @@ public class LoginCommand implements ICommand {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         if (!request.getMethod().equals("GET")) {
-            request.setAttribute("messages", login(request, login, password));
+            request.setAttribute("messages", login(request, login, hashPassword(password)));
         }
         return JspPageName.AUTHORISATION_JSP;
     }
@@ -70,5 +72,29 @@ public class LoginCommand implements ICommand {
             messages.put("success", rb.getString("AUTHORISATION_SUCCESS"));
         }
         return messages;
+    }
+
+    /**
+     * Method to make hash of password using SHA-256
+     *
+     * @param password user password
+     * @return hash of password
+     * @throws CommandException throws when we try to use unknown algorithm
+     */
+    private String hashPassword(String password) throws CommandException {
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new CommandException(e.getMessage());
+        }
+        byte[] hashedBytes = md.digest(password.getBytes());
+
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hashedBytes) {
+            hexString.append(String.format("%02x", b));
+        }
+
+        return hexString.toString();
     }
 }

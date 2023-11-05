@@ -6,6 +6,7 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.user.UsersExtractor;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import com.bsuir.aleksandrov.phoneshop.model.utils.ConnectionPool;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -171,16 +172,16 @@ public class JdbcUserDao implements UserDao {
      * Add new user
      *
      * @param user    user to add
-     * @param request request of adding
+     * @param session session of adding
      * @return Map with errors or success messages
      * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
-    public Map<String, String> addUser(User user, HttpServletRequest request) throws DaoException {
+    public Map<String, String> addUser(User user, HttpSession session) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         Map<String, String> messages = new HashMap<>();
-        Object lang = request.getSession().getAttribute("lang");
+        Object lang = session.getAttribute("lang");
         if (lang == null) {
             lang = "en";
         }

@@ -3,6 +3,8 @@ package com.bsuir.aleksandrov.phoneshop.web.commands;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.security.NoSuchAlgorithmException;
+
 /**
  * @author nekit
  * @version 1.0
