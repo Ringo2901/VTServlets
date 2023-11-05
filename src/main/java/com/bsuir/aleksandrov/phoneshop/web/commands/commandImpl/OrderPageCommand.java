@@ -46,7 +46,7 @@ public class OrderPageCommand implements ICommand {
             Order order = fillClientData(request, errorsMap);
             if (errorsMap.isEmpty()) {
                 try {
-                    orderService.placeOrder(order, request);
+                    orderService.placeOrder(order, request.getSession());
                 } catch (OutOfStockException exception) {
                     request.setAttribute(ODER_ATTRIBUTE, orderService.createOrder(cartService.getCart(request.getSession())));
                     errorsMap.put(0, exception.getMessage());

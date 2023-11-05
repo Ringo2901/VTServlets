@@ -13,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Using jdbc to work with order items
@@ -25,6 +27,7 @@ public class JdbcOrderItemDao implements OrderItemDao {
      * Instance of logger
      */
     private static final Logger log = Logger.getLogger(OrderItemDao.class);
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
     /**
      * SQL query for find phones from database by order
      */
@@ -51,6 +54,7 @@ public class JdbcOrderItemDao implements OrderItemDao {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(GET_ORDER_ITEMS);
             statement.setLong(1, key);
@@ -61,6 +65,7 @@ public class JdbcOrderItemDao implements OrderItemDao {
             log.log(Level.ERROR, "Error in getOrderItems", ex);
             throw new DaoException("Error in process of getting orderItems");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();

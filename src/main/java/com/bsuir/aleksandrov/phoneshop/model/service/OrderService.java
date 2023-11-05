@@ -6,6 +6,7 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderStatus;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.OutOfStockException;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.Optional;
 
@@ -24,10 +25,10 @@ public interface OrderService {
     /**
      * Place order in database
      * @param order order to place
-     * @param request request with cart
+     * @param session session with cart
      * @throws OutOfStockException throws when some product out of stock when placing cart
      */
-    void placeOrder(Order order, HttpServletRequest request) throws OutOfStockException, ServiceException;
+    void placeOrder(Order order, HttpSession session) throws OutOfStockException, ServiceException;
 
     /**
      * Change order status in database

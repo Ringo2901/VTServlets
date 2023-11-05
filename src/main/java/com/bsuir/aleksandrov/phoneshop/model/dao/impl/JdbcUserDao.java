@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Using jdbc to work with users
@@ -27,6 +29,7 @@ public class JdbcUserDao implements UserDao {
      * Instance of UserDao
      */
     private static volatile UserDao instance;
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
     /**
      * UsersExtractor
      */
@@ -97,6 +100,7 @@ public class JdbcUserDao implements UserDao {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(FIND_USER);
             statement.setLong(1, id);
@@ -107,6 +111,7 @@ public class JdbcUserDao implements UserDao {
             log.log(Level.ERROR, "Error in findUser", ex);
             throw new DaoException("Error in process of finding user");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -135,6 +140,7 @@ public class JdbcUserDao implements UserDao {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(FIND_USER_WITH_LOGIN_AND_PASSWORD);
             statement.setString(1, login);
@@ -146,6 +152,7 @@ public class JdbcUserDao implements UserDao {
             log.log(Level.ERROR, "Error in findUserByLoginAndPass", ex);
             throw new DaoException("Error in process of finding user");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -180,6 +187,7 @@ public class JdbcUserDao implements UserDao {
         Locale locale = new Locale(lang.toString());
         ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         try {
+            lock.writeLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(FIND_USER_WITH_LOGIN);
             statement.setString(1, user.getLogin());
@@ -199,6 +207,7 @@ public class JdbcUserDao implements UserDao {
             log.log(Level.ERROR, "Error in addUser", ex);
             throw new DaoException("Error in process of adding user");
         } finally {
+            lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -224,6 +233,7 @@ public class JdbcUserDao implements UserDao {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
+            lock.writeLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(DELETE_USER);
             statement.setString(1, user.getLogin());
@@ -234,6 +244,7 @@ public class JdbcUserDao implements UserDao {
             log.log(Level.ERROR, "Error in deleteUser", ex);
             throw new DaoException("Error in process of deleting user");
         } finally {
+            lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -255,10 +266,11 @@ public class JdbcUserDao implements UserDao {
      */
     @Override
     public List<User> findAllUsers() throws DaoException {
-        List<User> users = new ArrayList<>();
+        List<User> users;
         Connection conn = null;
         Statement statement = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(FIND_ALL_USERS);
@@ -268,6 +280,7 @@ public class JdbcUserDao implements UserDao {
             log.log(Level.ERROR, "Error in findAllUsers", ex);
             throw new DaoException("Error in process of finding all users");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();

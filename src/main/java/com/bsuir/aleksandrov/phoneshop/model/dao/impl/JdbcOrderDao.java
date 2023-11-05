@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Using jdbc to work with order
@@ -60,6 +62,7 @@ public class JdbcOrderDao implements OrderDao {
      * Field of order extractor
      */
     private OrdersExtractor ordersExtractor = new OrdersExtractor();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
     /**
      * Instance of connection pool
      */
@@ -98,6 +101,7 @@ public class JdbcOrderDao implements OrderDao {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(GET_ORDER_BY_ID);
             statement.setLong(1, key);
@@ -108,6 +112,7 @@ public class JdbcOrderDao implements OrderDao {
             log.log(Level.ERROR, "Error in getById", ex);
             throw new DaoException("Error in process of getting order");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -135,6 +140,7 @@ public class JdbcOrderDao implements OrderDao {
         PreparedStatement statement = null;
         Connection conn = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(GET_ORDER_BY_SECURE_ID);
             statement.setString(1, secureID);
@@ -145,6 +151,7 @@ public class JdbcOrderDao implements OrderDao {
             log.log(Level.ERROR, "Error in getBySecureID", ex);
             throw new DaoException("Error in process of getting order");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -167,10 +174,11 @@ public class JdbcOrderDao implements OrderDao {
      */
     @Override
     public List<Order> findOrders() throws DaoException {
-        List<Order> orders = null;
+        List<Order> orders;
         Statement statement = null;
         Connection conn = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(GET_ALL_ORDERS);
@@ -180,6 +188,7 @@ public class JdbcOrderDao implements OrderDao {
             log.log(Level.ERROR, "Error in findOrders", ex);
             throw new DaoException("Error in process of finding orders");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -207,6 +216,7 @@ public class JdbcOrderDao implements OrderDao {
         PreparedStatement statement = null;
         Connection conn = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(GET_ALL_ORDERS_BY_LOGIN);
             statement.setString(1, login);
@@ -217,6 +227,7 @@ public class JdbcOrderDao implements OrderDao {
             log.log(Level.ERROR, "Error in findOrdersByLogin", ex);
             throw new DaoException("Error in process of finding orders");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -243,6 +254,7 @@ public class JdbcOrderDao implements OrderDao {
         PreparedStatement statement = null;
         Connection conn = null;
         try {
+            lock.writeLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(CHANGE_STATUS);
             statement.setLong(2, id);
@@ -253,6 +265,7 @@ public class JdbcOrderDao implements OrderDao {
             log.log(Level.ERROR, "Error in changeStatus", ex);
             throw new DaoException("Error in process of changing status");
         } finally {
+            lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -278,6 +291,7 @@ public class JdbcOrderDao implements OrderDao {
         PreparedStatement statement = null;
 
         try {
+            lock.writeLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(SAVE_ORDER, PreparedStatement.RETURN_GENERATED_KEYS);
 
@@ -313,6 +327,7 @@ public class JdbcOrderDao implements OrderDao {
             log.log(Level.ERROR, "Error in order save", ex);
             throw new DaoException("Error in process of saving order");
         } finally {
+            lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();

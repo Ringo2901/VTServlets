@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Using jdbc to work with stock
@@ -24,6 +26,7 @@ public class JdbcStockDao implements StockDao {
      * Instance of logger
      */
     private static final Logger log = Logger.getLogger(StockDao.class);
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
     /**
      * Stock extractor
      */
@@ -93,6 +96,7 @@ public class JdbcStockDao implements StockDao {
             Connection conn = null;
             PreparedStatement statement = null;
             try {
+                lock.writeLock().lock();
                 conn = connectionPool.getConnection();
                 statement = conn.prepareStatement(UPDATE_STOCK);
                 statement.setLong(2, phoneId);
@@ -103,6 +107,7 @@ public class JdbcStockDao implements StockDao {
                 log.log(Level.ERROR, "Error in reserve", ex);
                 throw new DaoException("Error in process of reserving stock");
             } finally {
+                lock.writeLock().unlock();
                 if (statement != null) {
                     try {
                         statement.close();

@@ -14,6 +14,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Using jdbc to work with phones
@@ -54,6 +56,9 @@ public class JdbcPhoneDao implements PhoneDao {
     private static final String FIND_WITHOUT_OFFSET_AND_LIMIT = "SELECT ph.* " +
             "FROM (SELECT phones.* FROM phones " +
             "LEFT JOIN stocks ON phones.id = stocks.phoneId WHERE stocks.stock - stocks.reserved > 0 ";
+
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
     /**
      * SQL query to find number of phones
      */
@@ -84,10 +89,11 @@ public class JdbcPhoneDao implements PhoneDao {
      */
     @Override
     public Optional<Phone> get(Long key) throws DaoException {
-        Optional<Phone> phone = null;
+        Optional<Phone> phone;
         Connection conn = null;
         PreparedStatement statement = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(GET_QUERY);
             statement.setLong(1, key);
@@ -98,6 +104,7 @@ public class JdbcPhoneDao implements PhoneDao {
             log.log(Level.ERROR, "Error in get function", ex);
             throw new DaoException("Error in process of getting phone");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -125,11 +132,12 @@ public class JdbcPhoneDao implements PhoneDao {
      */
     @Override
     public List<Phone> findAll(int offset, int limit, SortField sortField, SortOrder sortOrder, String query) throws DaoException {
-        List<Phone> phones = new ArrayList<>();
+        List<Phone> phones;
         String sql = makeFindAllSQL(sortField, sortOrder, query);
         Connection conn = null;
         PreparedStatement statement = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(sql);
             statement.setInt(1, offset);
@@ -141,6 +149,7 @@ public class JdbcPhoneDao implements PhoneDao {
             log.log(Level.ERROR, "Error in findAll", ex);
             throw new DaoException("Error in process of getting all phones");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
@@ -177,6 +186,7 @@ public class JdbcPhoneDao implements PhoneDao {
         Connection conn = null;
         Statement statement = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
@@ -188,6 +198,7 @@ public class JdbcPhoneDao implements PhoneDao {
             log.log(Level.ERROR, "Error in numberByQuery", ex);
             throw new DaoException("Error in process of getting number of phones");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();

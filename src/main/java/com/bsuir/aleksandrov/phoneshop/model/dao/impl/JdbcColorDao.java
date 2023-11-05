@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Using jdbc to work with colors
@@ -40,6 +42,7 @@ public class JdbcColorDao implements ColorDao {
     private static final String GET_QUERY = "select COLORS.ID, COLORS.CODE " +
             "from (select * from PHONE2COLOR where PHONEID = ?) p2c " +
             "left join COLORS on p2c.COLORID = COLORS.ID order by COLORS.ID";
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
      * Get colors from database
@@ -50,10 +53,11 @@ public class JdbcColorDao implements ColorDao {
      */
     @Override
     public List<Color> getColors(Long id) throws DaoException {
-        List<Color> colors = new ArrayList<>();
+        List<Color> colors;
         Connection conn = null;
         PreparedStatement statement = null;
         try {
+            lock.readLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(GET_QUERY);
             statement.setLong(1, id);
@@ -64,6 +68,7 @@ public class JdbcColorDao implements ColorDao {
             log.log(Level.ERROR, "Error in getColors", ex);
             throw new DaoException("Error in process of getting colors");
         } finally {
+            lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();

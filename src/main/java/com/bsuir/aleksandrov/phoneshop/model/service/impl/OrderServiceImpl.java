@@ -14,6 +14,7 @@ import com.bsuir.aleksandrov.phoneshop.model.exceptions.ServiceException;
 import com.bsuir.aleksandrov.phoneshop.model.service.CartService;
 import com.bsuir.aleksandrov.phoneshop.model.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -85,16 +86,16 @@ public class OrderServiceImpl implements OrderService {
      * Place order in database
      *
      * @param order   order to place
-     * @param request request with cart
+     * @param session session with cart
      * @throws OutOfStockException throws when some products out of stock during placing
      * @throws ServiceException    throws when there is some errors during service method execution
      */
     @Override
-    public void placeOrder(final Order order, HttpServletRequest request) throws OutOfStockException, ServiceException {
-        checkStock(request, order);
+    public void placeOrder(final Order order, HttpSession session) throws OutOfStockException, ServiceException {
+        checkStock(session, order);
         order.setDate(new Date(Instant.now().toEpochMilli()));
         order.setTime(new Time(Instant.now().toEpochMilli()));
-        order.setLogin(request.getSession().getAttribute("login").toString());
+        order.setLogin(session.getAttribute("login").toString());
         order.setStatus(OrderStatus.NEW);
         try {
             for (OrderItem item : order.getOrderItems()) {
@@ -110,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage());
         }
-        cartService.clear(request.getSession());
+        cartService.clear(session);
     }
 
     /**
@@ -161,12 +162,12 @@ public class OrderServiceImpl implements OrderService {
     /**
      * Check stock of items in order
      *
-     * @param request request with cart to remove in case of out of stock
+     * @param session session with cart to remove in case of out of stock
      * @param order   order to check
      * @throws OutOfStockException throws when some products out of stock during placing
      * @throws ServiceException    throws when there is some errors during service method execution
      */
-    private void checkStock(HttpServletRequest request, final Order order) throws OutOfStockException, ServiceException {
+    private void checkStock(HttpSession session, final Order order) throws OutOfStockException, ServiceException {
         List<OrderItem> outOfStockItems = new ArrayList<>();
 
         for (OrderItem item : order.getOrderItems()) {
@@ -182,7 +183,7 @@ public class OrderServiceImpl implements OrderService {
             StringBuilder outOfStockModels = new StringBuilder();
             outOfStockItems.stream().forEach(item -> {
                 outOfStockModels.append(item.getPhone().getModel() + "; ");
-                cartService.remove(request.getSession(), item.getPhone().getId());
+                cartService.remove(session, item.getPhone().getId());
             });
             throw new OutOfStockException("Some of items out of stock (" + outOfStockModels + "). They deleted from cart.");
         }
