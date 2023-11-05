@@ -66,34 +66,35 @@ public class FrontController extends HttpServlet {
      */
     private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String commandName = request.getParameter(COMMAND_NAME);
+        String page;
+
         if (commandName != null) {
-            ICommand command = CommandHelper.getInstance().getCommand(commandName);
-            String page;
             try {
+                ICommand command = CommandHelper.getInstance().getCommand(commandName);
                 page = command.execute(request);
             } catch (CommandException e) {
                 request.setAttribute("message", e.getMessage());
                 page = JspPageName.ERROR_PAGE;
             }
-            RequestDispatcher dispatcher = request.getRequestDispatcher(page);
-            if (dispatcher != null) {
-                dispatcher.forward(request, response);
-            } else {
-                errorMessageDireclyFromresponse(response);
+        } else if (request.getParameter("sessionLocale") != null) {
+            try {
+                page = CommandHelper.getInstance().getCommand("Product_List").execute(request);
+            } catch (CommandException e) {
+                request.setAttribute("message", e.getMessage());
+                page = JspPageName.ERROR_PAGE;
             }
         } else {
-            if (request.getParameter("sessionLocale") != null) {
-                response.sendRedirect(request.getHeader("Referer"));
-            } else {
-                RequestDispatcher dispatcher = request.getRequestDispatcher(JspPageName.ERROR_PAGE);
-                if (dispatcher != null) {
-                    dispatcher.forward(request, response);
-                } else {
-                    errorMessageDireclyFromresponse(response);
-                }
-            }
+            page = JspPageName.ERROR_PAGE;
+        }
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher(page);
+        if (dispatcher != null) {
+            dispatcher.forward(request, response);
+        } else {
+            errorMessageDireclyFromresponse(response);
         }
     }
+
 
     /**
      * Error response when no jsp to send
