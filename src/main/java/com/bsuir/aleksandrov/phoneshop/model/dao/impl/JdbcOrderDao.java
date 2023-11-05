@@ -1,6 +1,5 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
-import com.bsuir.aleksandrov.phoneshop.model.dao.ColorDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.OrderDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.Order;
 import com.bsuir.aleksandrov.phoneshop.model.entities.order.OrderItem;
@@ -14,8 +13,10 @@ import org.apache.log4j.Logger;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
+
 /**
  * Using jdbc to work with order
+ *
  * @author nekit
  * @version 1.0
  */
@@ -70,6 +71,7 @@ public class JdbcOrderDao implements OrderDao {
 
     /**
      * Realisation of Singleton pattern
+     *
      * @return instance of OrderDao
      */
     public static OrderDao getInstance() {
@@ -85,8 +87,10 @@ public class JdbcOrderDao implements OrderDao {
 
     /**
      * Get order by id
+     *
      * @param key - id of order
      * @return order
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public Optional<Order> getById(final Long key) throws DaoException {
@@ -120,8 +124,10 @@ public class JdbcOrderDao implements OrderDao {
 
     /**
      * Get order by secureId
+     *
      * @param secureID - secureId of order
      * @return order
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public Optional<Order> getBySecureID(String secureID) throws DaoException {
@@ -155,7 +161,9 @@ public class JdbcOrderDao implements OrderDao {
 
     /**
      * Find orders in database
+     *
      * @return List of orders
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public List<Order> findOrders() throws DaoException {
@@ -188,8 +196,10 @@ public class JdbcOrderDao implements OrderDao {
 
     /**
      * Find orders in database by login
+     *
      * @param login login to find
      * @return List of orders
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public List<Order> findOrdersByLogin(String login) throws DaoException {
@@ -223,8 +233,10 @@ public class JdbcOrderDao implements OrderDao {
 
     /**
      * Change status of order
-     * @param id id of order
+     *
+     * @param id     id of order
      * @param status new status of order
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public void changeStatus(Long id, OrderStatus status) throws DaoException {
@@ -256,7 +268,9 @@ public class JdbcOrderDao implements OrderDao {
 
     /**
      * Save order in database
+     *
      * @param order - order to save
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public void save(final Order order) throws DaoException {
@@ -314,9 +328,10 @@ public class JdbcOrderDao implements OrderDao {
 
     /**
      * Add order item in database
-     * @param conn connection to database
-     * @param orderId id of order
-     * @param phoneId id of phone to add
+     *
+     * @param conn     connection to database
+     * @param orderId  id of order
+     * @param phoneId  id of phone to add
      * @param quantity quantity of phone to add
      * @throws SQLException exception throws when there were some problems during sql operation
      */

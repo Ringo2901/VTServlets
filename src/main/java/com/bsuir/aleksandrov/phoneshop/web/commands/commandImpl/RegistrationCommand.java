@@ -12,18 +12,40 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
+/**
+ * @author nekit
+ * @version 1.0
+ * Command to register new user
+ */
 public class RegistrationCommand implements ICommand {
     private UserDao userDao = JdbcUserDao.getInstance();
+
+    /**
+     * Return registration page or register new user
+     *
+     * @param request http request
+     * @return registration page jsp path
+     * @throws CommandException throws when there is some errors during command execution
+     */
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
-            String login = request.getParameter("login");
-            String password = request.getParameter("password");
-            if (!request.getMethod().equals("GET")) {
-                request.setAttribute("message", registration(login, password, request));
-            }
-            return JspPageName.REGISTRATION_JSP;
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
+        if (!request.getMethod().equals("GET")) {
+            request.setAttribute("message", registration(login, password, request));
+        }
+        return JspPageName.REGISTRATION_JSP;
     }
 
+    /**
+     * Registration of new user
+     *
+     * @param login    login of user
+     * @param password password of user
+     * @param request  http request
+     * @return result of registration
+     * @throws CommandException throws when there is some errors during command execution
+     */
     private Map<String, String> registration(String login, String password, HttpServletRequest request) throws CommandException {
         User user = new User(UserRole.USER, login, password);
         try {

@@ -87,6 +87,7 @@ public class OrderServiceImpl implements OrderService {
      * @param order   order to place
      * @param request request with cart
      * @throws OutOfStockException throws when some products out of stock during placing
+     * @throws ServiceException    throws when there is some errors during service method execution
      */
     @Override
     public void placeOrder(final Order order, HttpServletRequest request) throws OutOfStockException, ServiceException {
@@ -117,6 +118,7 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param id     id of order
      * @param status new status of order
+     * @throws ServiceException throws when there is some errors during service method execution
      */
     @Override
     public void changeOrderStatus(Long id, OrderStatus status) throws ServiceException {
@@ -131,7 +133,7 @@ public class OrderServiceImpl implements OrderService {
     public Optional<Order> getById(Long id) throws ServiceException {
         try {
             return orderDao.getById(id);
-        } catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException(e.getMessage());
         }
     }
@@ -162,6 +164,7 @@ public class OrderServiceImpl implements OrderService {
      * @param request request with cart to remove in case of out of stock
      * @param order   order to check
      * @throws OutOfStockException throws when some products out of stock during placing
+     * @throws ServiceException    throws when there is some errors during service method execution
      */
     private void checkStock(HttpServletRequest request, final Order order) throws OutOfStockException, ServiceException {
         List<OrderItem> outOfStockItems = new ArrayList<>();

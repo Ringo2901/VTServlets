@@ -1,5 +1,10 @@
 package com.bsuir.aleksandrov.phoneshop.web.commands;
 
+/**
+ * @author nekit
+ * @version 1.0
+ * Enum of all commands name
+ */
 public enum CommandName {
     PRODUCT_LIST,
     CART_ADD,

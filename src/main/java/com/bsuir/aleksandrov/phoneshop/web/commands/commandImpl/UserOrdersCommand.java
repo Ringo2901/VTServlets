@@ -8,9 +8,21 @@ import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * @author nekit
+ * @version 1.0
+ * Command to get user orders page
+ */
 public class UserOrdersCommand implements ICommand {
     private OrderDao orderDao = JdbcOrderDao.getInstance();
     private static final String ORDERS_ATTRIBUTE = "orders";
+
+    /**
+     * Get user orders and show user orders page
+     * @param request http request
+     * @return user orders page jsp path
+     * @throws CommandException throws when there is some errors during command execution
+     */
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
         try {

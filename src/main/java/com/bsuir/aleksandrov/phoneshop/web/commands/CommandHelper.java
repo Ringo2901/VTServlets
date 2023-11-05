@@ -5,9 +5,18 @@ import com.bsuir.aleksandrov.phoneshop.web.commands.commandImpl.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author nekit
+ * @version 1.0
+ * Class that help to get command from its name
+ */
 public final class CommandHelper {
     private static final CommandHelper instance = new CommandHelper();
+    /**
+     * Map with commands names and commands classes
+     */
     private Map<CommandName, ICommand> commands = new HashMap<>();
+
     public CommandHelper() {
         commands.put(CommandName.PRODUCT_LIST, new ProductListCommand());
         commands.put(CommandName.UNKNOWN_COMMAND, new UnknownCommand());
@@ -26,15 +35,23 @@ public final class CommandHelper {
         commands.put(CommandName.USER_ORDERS, new UserOrdersCommand());
         commands.put(CommandName.ADMIN_ORDER_MANAGE, new AdminOrderOverviewCommand());
     }
+
     public static CommandHelper getInstance() {
         return instance;
     }
-    public ICommand getCommand(String commandName){
+
+    /**
+     * Method that return command class with requested name
+     *
+     * @param commandName name of class
+     * @return instance of command class
+     */
+    public ICommand getCommand(String commandName) {
         CommandName name = CommandName.valueOf(commandName.toUpperCase());
         ICommand command;
-        if ( null != name){
+        if (null != name) {
             command = commands.get(name);
-        } else{
+        } else {
             command = commands.get(CommandName.UNKNOWN_COMMAND);
         }
         return command;

@@ -1,6 +1,5 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
-import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.StockDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.stock.Stock;
 import com.bsuir.aleksandrov.phoneshop.model.entities.stock.StocksExtractor;
@@ -16,6 +15,7 @@ import java.sql.SQLException;
 
 /**
  * Using jdbc to work with stock
+ *
  * @author nekit
  * @version 1.0
  */
@@ -47,6 +47,7 @@ public class JdbcStockDao implements StockDao {
 
     /**
      * Realisation of Singleton pattern
+     *
      * @return instance of StockDao
      */
     public static StockDao getInstance() {
@@ -62,8 +63,10 @@ public class JdbcStockDao implements StockDao {
 
     /**
      * Find available stock in database
+     *
      * @param phoneId id of phone
      * @return available stock
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public Integer availableStock(Long phoneId) throws DaoException {
@@ -77,8 +80,10 @@ public class JdbcStockDao implements StockDao {
 
     /**
      * Update reserve number of phones in database
-     * @param phoneId - phone to update
+     *
+     * @param phoneId  - phone to update
      * @param quantity - quantity to add in reserve field
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public void reserve(Long phoneId, int quantity) throws DaoException {
@@ -114,8 +119,10 @@ public class JdbcStockDao implements StockDao {
 
     /**
      * Get stock of phone in database
+     *
      * @param phoneId id of phone
      * @return stock of phone
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     private Stock getStock(Long phoneId) throws DaoException {
         Stock stock = null;

@@ -1,7 +1,14 @@
 package com.bsuir.aleksandrov.phoneshop.web;
 
+/**
+ * @author nekit
+ * @version 1.0
+ * Class contains all jsp paths
+ */
 public final class JspPageName {
-    private JspPageName() {}
+    private JspPageName() {
+    }
+
     public static final String PRODUCT_LIST_JSP = "/WEB-INF/pages/productList.jsp";
     public static final String ERROR_PAGE = "/WEB-INF/pages/errorPage.jsp";
     public static final String ADMIN_ORDER_MANAGE_PAGE_JSP = "/WEB-INF/pages/adminOrderManagePage.jsp";

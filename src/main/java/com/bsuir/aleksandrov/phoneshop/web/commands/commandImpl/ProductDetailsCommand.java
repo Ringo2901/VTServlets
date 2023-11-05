@@ -9,9 +9,21 @@ import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * @author nekit
+ * @version 1.0
+ * Command to get product details page
+ */
 public class ProductDetailsCommand implements ICommand {
     private final PhoneDao phoneDao = JdbcPhoneDao.getInstance();
     private static final String PHONE_ATTRIBUTE = "phone";
+
+    /**
+     * Return product details page of current phone
+     * @param request http request
+     * @return product details page jsp path
+     * @throws CommandException throws when there is some errors during command execution
+     */
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
         Phone phone;

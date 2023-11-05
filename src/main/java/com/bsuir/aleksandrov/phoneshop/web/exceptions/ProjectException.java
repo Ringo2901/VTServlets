@@ -1,5 +1,11 @@
 package com.bsuir.aleksandrov.phoneshop.web.exceptions;
 
+/**
+ /**
+ * @author nekit
+ * @version 1.0
+ * Exception to all project
+ */
 public class ProjectException extends Exception{
     private static final long serialVersionUID = 1L;
     private Exception hiddenException;

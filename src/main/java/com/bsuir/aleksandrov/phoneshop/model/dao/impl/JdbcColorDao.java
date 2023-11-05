@@ -46,6 +46,7 @@ public class JdbcColorDao implements ColorDao {
      *
      * @param id - id of phone
      * @return List of colors
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public List<Color> getColors(Long id) throws DaoException {

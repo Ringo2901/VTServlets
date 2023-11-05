@@ -12,6 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Optional;
 
+/**
+ * @author nekit
+ * @version 1.0
+ * Command to show list of products
+ */
 public class ProductListCommand implements ICommand {
     private final PhoneDao phoneDao = JdbcPhoneDao.getInstance();
     private static final String QUERY_PARAMETER = "query";
@@ -22,6 +27,12 @@ public class ProductListCommand implements ICommand {
     private static final String PAGE_ATTRIBUTE = "numberOfPages";
     private static final int PHONES_ON_PAGE = 10;
 
+    /**
+     * Get product list and return product list jsp
+     * @param request http request
+     * @return product list jsp path
+     * @throws CommandException throws when there is some errors during command execution
+     */
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
         String pageNumber = request.getParameter(PAGE_PARAMETER);

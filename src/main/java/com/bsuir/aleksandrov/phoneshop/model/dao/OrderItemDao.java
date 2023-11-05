@@ -12,8 +12,10 @@ import java.util.List;
 public interface OrderItemDao {
     /**
      * Find items from order
+     *
      * @param key key of order
      * @return List of OrderItems from order
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     List<OrderItem> getOrderItems(Long key) throws DaoException;
 }

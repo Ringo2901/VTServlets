@@ -1,6 +1,5 @@
 package com.bsuir.aleksandrov.phoneshop.model.dao.impl;
 
-import com.bsuir.aleksandrov.phoneshop.model.dao.OrderItemDao;
 import com.bsuir.aleksandrov.phoneshop.model.dao.PhoneDao;
 import com.bsuir.aleksandrov.phoneshop.model.entities.phone.Phone;
 import com.bsuir.aleksandrov.phoneshop.model.entities.phone.PhonesExtractor;
@@ -15,8 +14,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 /**
  * Using jdbc to work with phones
+ *
  * @author nekit
  * @version 1.0
  */
@@ -60,6 +61,7 @@ public class JdbcPhoneDao implements PhoneDao {
 
     /**
      * Realisation of Singleton pattern
+     *
      * @return instance of PhoneDao
      */
     public static PhoneDao getInstance() {
@@ -75,8 +77,10 @@ public class JdbcPhoneDao implements PhoneDao {
 
     /**
      * Get phone by id from database
+     *
      * @param key id of phone
      * @return phone
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public Optional<Phone> get(Long key) throws DaoException {
@@ -110,12 +114,14 @@ public class JdbcPhoneDao implements PhoneDao {
 
     /**
      * Find all phones from database
-     * @param offset - offset of found phones
-     * @param limit - limit of found phones
+     *
+     * @param offset    - offset of found phones
+     * @param limit     - limit of found phones
      * @param sortField - field to sort (model, brand, price, display size)
      * @param sortOrder - sort order (asc or desc)
-     * @param query - query for find
+     * @param query     - query for find
      * @return list of phones
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public List<Phone> findAll(int offset, int limit, SortField sortField, SortOrder sortOrder, String query) throws DaoException {
@@ -150,9 +156,11 @@ public class JdbcPhoneDao implements PhoneDao {
     }
 
     /**
-     * Frind number of phones by query from database
+     * Find number of phones by query from database
+     *
      * @param query - query for find
-     * @return
+     * @return number of phones
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public Long numberByQuery(String query) throws DaoException {
@@ -196,9 +204,10 @@ public class JdbcPhoneDao implements PhoneDao {
 
     /**
      * Make sql query with sorting and finding
+     *
      * @param sortField - field to sort
      * @param sortOrder - order to sort
-     * @param query - query to find
+     * @param query     - query to find
      * @return sql query
      */
     private String makeFindAllSQL(SortField sortField, SortOrder sortOrder, String query) {

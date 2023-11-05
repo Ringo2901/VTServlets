@@ -4,7 +4,6 @@ import com.bsuir.aleksandrov.phoneshop.model.entities.user.User;
 import com.bsuir.aleksandrov.phoneshop.model.exceptions.DaoException;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.net.http.HttpRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,36 +15,46 @@ import java.util.Optional;
 public interface UserDao {
     /**
      * Find user by id
+     *
      * @param id id of user
      * @return user
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     Optional<User> findUser(Long id) throws DaoException;
 
     /**
      * Find user by login and password
-     * @param login login of user
+     *
+     * @param login    login of user
      * @param password password of user
      * @return user
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     Optional<User> findUserByLoginAndPass(String login, String password) throws DaoException;
 
     /**
      * Add new user to database
-     * @param user user to add
+     *
+     * @param user    user to add
      * @param request request of adding
      * @return map of errors
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     Map<String, String> addUser(User user, HttpServletRequest request) throws DaoException;
 
     /**
      * Delete user from database
+     *
      * @param user user to delete
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     void deleteUser(User user) throws DaoException;
 
     /**
      * Find all users in database
+     *
      * @return List of users
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     List<User> findAllUsers() throws DaoException;
 }

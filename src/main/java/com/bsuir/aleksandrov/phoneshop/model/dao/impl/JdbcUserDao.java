@@ -14,6 +14,7 @@ import java.util.*;
 
 /**
  * Using jdbc to work with users
+ *
  * @author nekit
  * @version 1.0
  */
@@ -69,6 +70,7 @@ public class JdbcUserDao implements UserDao {
 
     /**
      * Realisation of Singleton pattern
+     *
      * @return instance of UserDao
      */
     public static UserDao getInstance() {
@@ -84,8 +86,10 @@ public class JdbcUserDao implements UserDao {
 
     /**
      * Find user by id
+     *
      * @param id id of user
      * @return user
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public Optional<User> findUser(Long id) throws DaoException {
@@ -119,9 +123,11 @@ public class JdbcUserDao implements UserDao {
 
     /**
      * Find user by login and password
-     * @param login login of user
+     *
+     * @param login    login of user
      * @param password password of user
      * @return user
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public Optional<User> findUserByLoginAndPass(String login, String password) throws DaoException {
@@ -156,9 +162,11 @@ public class JdbcUserDao implements UserDao {
 
     /**
      * Add new user
-     * @param user user to add
+     *
+     * @param user    user to add
      * @param request request of adding
      * @return Map with errors or success messages
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public Map<String, String> addUser(User user, HttpServletRequest request) throws DaoException {
@@ -207,7 +215,9 @@ public class JdbcUserDao implements UserDao {
 
     /**
      * Delete user from database
+     *
      * @param user user to delete
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public void deleteUser(User user) throws DaoException {
@@ -239,7 +249,9 @@ public class JdbcUserDao implements UserDao {
 
     /**
      * Find all users in database
+     *
      * @return List of users
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public List<User> findAllUsers() throws DaoException {

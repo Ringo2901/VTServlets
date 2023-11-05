@@ -98,6 +98,7 @@ public class HttpSessionCartService implements CartService {
      * @param quantity       quantity of phone to add
      * @param currentSession session with cart
      * @throws OutOfStockException throws when phone outOfStock
+     * @throws ServiceException    throws when there is some errors during service method execution
      */
     @Override
     public void add(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException, ServiceException {
@@ -157,6 +158,7 @@ public class HttpSessionCartService implements CartService {
      * @param quantity       quantity of phone to update
      * @param currentSession session with cart
      * @throws OutOfStockException throws when phone quantity out of stock during updating
+     * @throws ServiceException    throws when there is some errors during service method execution
      */
     @Override
     public void update(Cart cart, Long productId, int quantity, HttpSession currentSession) throws OutOfStockException, ServiceException {

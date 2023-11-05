@@ -16,9 +16,21 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * @author nekit
+ * @version 1.0
+ * Command to update cart items
+ */
 public class CartUpdateCommand implements ICommand {
     private CartService cartService = HttpSessionCartService.getInstance();
 
+    /**
+     * Update quantity of cart items, fill errors or success message, return cart jsp path
+     *
+     * @param request http request
+     * @return cart jsp path
+     * @throws CommandException throws when there is some errors during command execution
+     */
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
         Map<Long, String> inputErrors = new HashMap<>();
@@ -57,6 +69,14 @@ public class CartUpdateCommand implements ICommand {
         return CommandHelper.getInstance().getCommand("cart").execute(request);
     }
 
+    /**
+     * Return int quantity from string representation
+     *
+     * @param quantity string representation of quantity
+     * @param request  http request
+     * @return int representation of quantity
+     * @throws ParseException throws when string representation is not a number
+     */
     private int parseQuantity(String quantity, HttpServletRequest request) throws ParseException {
         int result;
         Object lang = request.getSession().getAttribute("lang");

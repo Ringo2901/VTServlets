@@ -14,19 +14,40 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * @author nekit
+ * @version 1.0
+ * Command to log in user
+ */
 public class LoginCommand implements ICommand {
     private UserDao userDao = JdbcUserDao.getInstance();
 
+    /**
+     * Return login page jsp path or login user
+     *
+     * @param request http request
+     * @return login page jsp
+     * @throws CommandException throws when there is some errors during command execution
+     */
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
-            String login = request.getParameter("login");
-            String password = request.getParameter("password");
-            if (!request.getMethod().equals("GET")) {
-                request.setAttribute("messages", login(request, login, password));
-            }
-            return JspPageName.AUTHORISATION_JSP;
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
+        if (!request.getMethod().equals("GET")) {
+            request.setAttribute("messages", login(request, login, password));
+        }
+        return JspPageName.AUTHORISATION_JSP;
     }
 
+    /**
+     * Check login and password of user and return result of authorisation
+     *
+     * @param request  http request
+     * @param login    login of user
+     * @param password password of user
+     * @return result of the authorisation
+     * @throws CommandException throws when there is some errors during command execution
+     */
     private Map<String, String> login(HttpServletRequest request, String login, String password) throws CommandException {
         User user;
         try {

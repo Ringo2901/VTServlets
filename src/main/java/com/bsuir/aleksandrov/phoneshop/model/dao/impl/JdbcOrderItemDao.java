@@ -13,8 +13,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
 /**
  * Using jdbc to work with order items
+ *
  * @author nekit
  * @version 1.0
  */
@@ -38,8 +40,10 @@ public class JdbcOrderItemDao implements OrderItemDao {
 
     /**
      * Get orderItems from database by id of order
+     *
      * @param key key of order
      * @return List of OrderItems
+     * @throws DaoException throws when there is some errors during dao method execution
      */
     @Override
     public List<OrderItem> getOrderItems(final Long key) throws DaoException {
