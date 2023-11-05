@@ -77,7 +77,7 @@ public class CartUpdateCommand implements ICommand {
      * @return int representation of quantity
      * @throws ParseException throws when string representation is not a number
      */
-    private int parseQuantity(String quantity, HttpServletRequest request) throws ParseException {
+    public int parseQuantity(String quantity, HttpServletRequest request) throws ParseException {
         int result;
         Object lang = request.getSession().getAttribute("lang");
         if (lang == null) {

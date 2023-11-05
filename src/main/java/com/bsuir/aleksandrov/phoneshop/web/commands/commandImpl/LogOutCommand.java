@@ -29,7 +29,7 @@ public class LogOutCommand implements ICommand {
      *
      * @param request http request
      */
-    private void logout(HttpServletRequest request) {
+    public void logout(HttpServletRequest request) {
         request.getSession().setAttribute("role", "visitor");
         request.getSession().setAttribute("login", "");
     }
