@@ -3,6 +3,7 @@ package com.bsuir.aleksandrov.phoneshop.web.commands.commandImpl;
 import com.bsuir.aleksandrov.phoneshop.model.service.CartService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.HttpSessionCartService;
 import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
+import com.bsuir.aleksandrov.phoneshop.web.commands.CommandHelper;
 import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ public class CartDeleteCommand implements ICommand {
         ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         int phoneId = Integer.parseInt(request.getParameter("id"));
         cartService.delete(cartService.getCart(request.getSession()), (long) phoneId, request.getSession());
-        request.getSession().setAttribute("successMessage", rb.getString("delete_success"));
-        return request.getHeader("Referer");
+        request.setAttribute("successMessage", rb.getString("delete_success"));
+        return CommandHelper.getInstance().getCommand("cart").execute(request);
     }
 }

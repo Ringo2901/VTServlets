@@ -29,16 +29,15 @@ public class AdminUsersCommand implements ICommand {
             } catch (DaoException e) {
                 throw new CommandException(e.getMessage());
             }
-            return JspPageName.ADMIN_USERS_PAGE_JSP;
         } else{
             deleteUser(request);
-            return request.getHeader("Referer");
         }
+        return JspPageName.ADMIN_USERS_PAGE_JSP;
     }
 
     private void deleteUser(HttpServletRequest request) throws CommandException {
         Long userId = Long.valueOf(request.getParameter("userId"));
-        User user = null;
+        User user;
         try {
             user = userDao.findUser(userId).orElse(null);
         } catch (DaoException e) {

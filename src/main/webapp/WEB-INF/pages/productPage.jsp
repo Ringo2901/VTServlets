@@ -9,20 +9,24 @@
 <tags:master pageTitle="Phohe Details">
 
     <c:choose>
-        <c:when test="${not empty param.inputErrors}">
+        <c:when test="${not empty inputErrors}">
             <div class="container">
                 <div class="panel panel-danger">
                     <div class="panel-heading"><fmt:message key="error_title" /></div>
-                    <div class="panel-body"><fmt:message key="error_updating_cart" /></div>
+                    <div class="panel-body">
+                        <fmt:message key="error_updating_cart" />
+                        <br>
+                        ${inputErrors.get(phone.id)}
+                    </div>
                 </div>
             </div>
         </c:when>
         <c:otherwise>
-            <c:if test="${not empty param.successMessage}">
+            <c:if test="${not empty successMessage}">
                 <div class="container">
                     <div class="panel panel-success">
                         <div class="panel-heading"><fmt:message key="success_title" /></div>
-                        <div class="panel-body">${param.successMessage}</div>
+                        <div class="panel-body">${successMessage}</div>
                     </div>
                 </div>
             </c:if>
@@ -41,6 +45,7 @@
                         <c:when test="${not empty sessionScope.login}">
                             <form action="/" method="post">
                                 <input type="hidden" name="command" value="cart_add">
+                                <input type="hidden" name="page_type" value="product_details">
                         </c:when>
                         <c:otherwise>
                             <form action="/" method="get">
@@ -49,11 +54,9 @@
                     </c:choose>
                         <input type="hidden" name="id" value="${phone.id}">
                         <input type="number" name="quantity" id="quantity${phone.id}" min="1" required>
-
                         <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit"><fmt:message key="button_add" /></button>
                     </form>
                 </div>
-
             </div>
 
             <div class="col-1"></div>

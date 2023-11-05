@@ -10,13 +10,17 @@ import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class ProductDetailsCommand implements ICommand {
-    private PhoneDao phoneDao = JdbcPhoneDao.getInstance();
+    private final PhoneDao phoneDao = JdbcPhoneDao.getInstance();
     private static final String PHONE_ATTRIBUTE = "phone";
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
-        Phone phone = null;
+        Phone phone;
         try {
-            phone = phoneDao.get(Long.valueOf(request.getParameter("phone_id"))).orElse(null);
+            if (request.getParameter("phone_id") == null){
+                phone = phoneDao.get(Long.parseLong(request.getAttribute("phone_id").toString())).orElse(null);
+            } else {
+                phone = phoneDao.get(Long.valueOf(request.getParameter("phone_id"))).orElse(null);
+            }
         } catch (DaoException e) {
             throw new CommandException(e.getMessage());
         }

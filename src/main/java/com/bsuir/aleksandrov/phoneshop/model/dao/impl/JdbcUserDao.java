@@ -45,7 +45,7 @@ public class JdbcUserDao implements UserDao {
     /**
      * SQL query to find all users with role User
      */
-    private static String FIND_ALL_USERS = "SELECT * FROM users WHERE role = 'User'";
+    private static String FIND_ALL_USERS = "SELECT * FROM users WHERE role = 'USER'";
     /**
      * SQL query to delete user with login and password
      */
@@ -89,7 +89,7 @@ public class JdbcUserDao implements UserDao {
      */
     @Override
     public Optional<User> findUser(Long id) throws DaoException {
-        Optional<User> user = Optional.empty();
+        Optional<User> user;
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -180,7 +180,7 @@ public class JdbcUserDao implements UserDao {
                 statement = conn.prepareStatement(ADD_USER);
                 statement.setString(1, user.getLogin());
                 statement.setString(2, user.getPassword());
-                statement.setString(3, user.getUserRole().toString());
+                statement.setString(3, user.getUserRole().toString().toUpperCase());
                 statement.executeUpdate();
                 messages.put(MESSAGE_KEY_SUCCESS, rb.getString("REGISTRATION_SUCCESS"));
             } else {

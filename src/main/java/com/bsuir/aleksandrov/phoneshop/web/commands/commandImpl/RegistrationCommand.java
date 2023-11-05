@@ -16,14 +16,12 @@ public class RegistrationCommand implements ICommand {
     private UserDao userDao = JdbcUserDao.getInstance();
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
-        if (!request.getMethod().equals("GET")) {
             String login = request.getParameter("login");
             String password = request.getParameter("password");
-            request.setAttribute("message", registration(login, password, request));
-            return request.getHeader("Referer");
-        } else {
+            if (!request.getMethod().equals("GET")) {
+                request.setAttribute("message", registration(login, password, request));
+            }
             return JspPageName.REGISTRATION_JSP;
-        }
     }
 
     private Map<String, String> registration(String login, String password, HttpServletRequest request) throws CommandException {

@@ -42,7 +42,7 @@ public class AdminOrderOverviewCommand implements ICommand {
             }
         } else{
             change_status(request);
-            return request.getHeader("Referer");
+            return JspPageName.ADMIN_ORDER_MANAGE_PAGE_JSP;
         }
     }
 

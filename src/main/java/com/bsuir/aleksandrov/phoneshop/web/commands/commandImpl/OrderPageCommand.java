@@ -8,6 +8,7 @@ import com.bsuir.aleksandrov.phoneshop.model.service.OrderService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.HttpSessionCartService;
 import com.bsuir.aleksandrov.phoneshop.model.service.impl.OrderServiceImpl;
 import com.bsuir.aleksandrov.phoneshop.web.JspPageName;
+import com.bsuir.aleksandrov.phoneshop.web.commands.CommandHelper;
 import com.bsuir.aleksandrov.phoneshop.web.commands.ICommand;
 import com.bsuir.aleksandrov.phoneshop.web.exceptions.CommandException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ public class OrderPageCommand implements ICommand {
     private static final String ODER_ATTRIBUTE = "order";
     private OrderService orderService = OrderServiceImpl.getInstance();
     private CartService cartService = HttpSessionCartService.getInstance();
-    private final String PHONE_VALIDATION_REG_EXP = "^(\\+375)(29|25|44|33)(\\d{3})(\\d{2})(\\d{2})$";
+    private final String PHONE_VALIDATION_REG_EXP = "^\\+375(29|25|44|33)\\d{7}$";
 
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
@@ -35,20 +36,21 @@ public class OrderPageCommand implements ICommand {
                 try {
                     orderService.placeOrder(order, request);
                 } catch (OutOfStockException exception) {
-                    request.setAttribute("order", orderService.createOrder(cartService.getCart(request.getSession())));
+                    request.setAttribute(ODER_ATTRIBUTE, orderService.createOrder(cartService.getCart(request.getSession())));
                     errorsMap.put(0, exception.getMessage());
                     request.setAttribute("errorsMap", errorsMap);
-                    return "http://localhost:8080/?command=order";
+                    return JspPageName.ORDER_JSP;
                 } catch (ServiceException e) {
                     throw new CommandException(e.getMessage());
                 }
                 if (errorsMap.isEmpty()) {
-                    return "http://localhost:8080/?command=order_overview&secureId="+order.getSecureID();
+                    request.setAttribute("secureId", order.getSecureID());
+                    return CommandHelper.getInstance().getCommand("order_overview").execute(request);
                 }
             } else {
                 request.setAttribute("errorsMap", errorsMap);
-                request.setAttribute("order", orderService.createOrder(cartService.getCart(request.getSession())));
-                return "http://localhost:8080/?command=order";
+                request.setAttribute(ODER_ATTRIBUTE, orderService.createOrder(cartService.getCart(request.getSession())));
+                return JspPageName.ORDER_JSP;
             }
         }
         return JspPageName.ORDER_JSP;

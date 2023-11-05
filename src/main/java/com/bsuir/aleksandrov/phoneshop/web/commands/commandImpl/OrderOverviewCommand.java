@@ -14,7 +14,12 @@ public class OrderOverviewCommand implements ICommand {
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
         try {
-            request.setAttribute(ORDER_ATTRIBUTE, orderDao.getBySecureID(request.getParameter("secureId")).orElse(null));
+            if (request.getParameter("secureId") == null){
+                request.setAttribute(ORDER_ATTRIBUTE, orderDao.getBySecureID(request.getAttribute("secureId").toString()).orElse(null));
+            } else{
+                request.setAttribute(ORDER_ATTRIBUTE, orderDao.getBySecureID(request.getParameter("secureId")).orElse(null));
+            }
+
         } catch (DaoException e) {
             throw new CommandException(e.getMessage());
         }

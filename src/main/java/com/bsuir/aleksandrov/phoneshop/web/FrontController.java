@@ -38,19 +38,23 @@ public class FrontController extends HttpServlet {
                 request.setAttribute("message", e.getMessage());
                 page = JspPageName.ERROR_PAGE;
             }
-            if (request.getMethod().equals("GET")) {
                 RequestDispatcher dispatcher = request.getRequestDispatcher(page);
                 if (dispatcher != null) {
                     dispatcher.forward(request, response);
                 } else {
                     errorMessageDireclyFromresponse(response);
                 }
-            } else {
-                response.sendRedirect(page);
-            }
         } else {
             if (request.getParameter("sessionLocale") != null) {
                 response.sendRedirect(request.getHeader("Referer"));
+            }
+            else {
+                RequestDispatcher dispatcher = request.getRequestDispatcher(JspPageName.ERROR_PAGE);
+                if (dispatcher != null) {
+                    dispatcher.forward(request, response);
+                } else {
+                    errorMessageDireclyFromresponse(response);
+                }
             }
         }
     }

@@ -14,23 +14,22 @@
   <fmt:setBundle basename="messages"/>
 
   <c:choose>
-    <c:when test="${not empty param.inputErrors}">
+    <c:when test="${not empty inputErrors}">
       <div class="container">
         <div class="panel panel-danger">
           <div class="panel-heading"><fmt:message key="error_title" /></div>
           <div class="panel-body">
             <fmt:message key="error_updating_cart" />
-            ${param.inputErrors}
           </div>
         </div>
       </div>
     </c:when>
     <c:otherwise>
-      <c:if test="${not empty param.successMessage}">
+      <c:if test="${not empty successMessage}">
         <div class="container">
           <div class="panel panel-success">
             <div class="panel-heading"><fmt:message key="success_title" /></div>
-            <div class="panel-body">${param.successMessage}</div>
+            <div class="panel-body">${successMessage}</div>
           </div>
         </div>
       </c:if>
@@ -84,10 +83,22 @@
               <img class="rounded" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${phone.imageUrl}">
             </td>
             <td class="align-middle">
-              <a href="<c:url value="/?command=product_details&phone_id=${phone.id}"/>">${phone.brand}</a>
+              <form id="productFormBrand" action="/" method="GET">
+                <input type="hidden" name="command" value="product_details">
+                <input type="hidden" name="phone_id" value="${phone.id}">
+                <button type="submit">
+                    ${phone.brand}
+                </button>
+              </form>
             </td>
             <td class="align-middle">
-              <a href="<c:url value="/?command=product_details&phone_id=${phone.id}"/>">${phone.model}</a>
+              <form id="productFormModel" action="/" method="GET">
+                <input type="hidden" name="command" value="product_details">
+                <input type="hidden" name="phone_id" value="${phone.id}">
+                <button type="submit">
+                    ${phone.model}
+                </button>
+              </form>
             </td>
             <td class="align-middle">
               <ul>
@@ -110,9 +121,13 @@
                         </c:otherwise>
                       </c:choose>
                 <input type="hidden" name="id" value="${phone.id}">
+                <input type="hidden" name="page_type" value="productList">
                 <input type="number" name="quantity" id="quantity${phone.id}" min="1" required>
                 <button class="btn btn-lg btn-outline-light text-dark border-dark float-right" type="submit" style="font-size: 14px"><fmt:message key="button_add" /></button>
               </form>
+                              <c:if test="${not empty inputErrors.get(phone.id)}">
+                                  <div class="error" style="color: red">${inputErrors[phone.id]}</div>
+                              </c:if>
             </td>
           </tr>
         </c:forEach>

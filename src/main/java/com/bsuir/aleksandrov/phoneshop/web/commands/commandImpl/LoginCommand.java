@@ -19,14 +19,12 @@ public class LoginCommand implements ICommand {
 
     @Override
     public String execute(HttpServletRequest request) throws CommandException {
-        if (!request.getMethod().equals("GET")) {
             String login = request.getParameter("login");
             String password = request.getParameter("password");
-            request.setAttribute("messages", login(request, login, password));
-            return request.getHeader("Referer");
-        } else {
+            if (!request.getMethod().equals("GET")) {
+                request.setAttribute("messages", login(request, login, password));
+            }
             return JspPageName.AUTHORISATION_JSP;
-        }
     }
 
     private Map<String, String> login(HttpServletRequest request, String login, String password) throws CommandException {
